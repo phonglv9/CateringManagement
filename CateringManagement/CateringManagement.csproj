@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Folder Include="Models\Entity\" />
+    <Folder Include="wwwroot\admin\assets\img\" />
   </ItemGroup>
 
 </Project>

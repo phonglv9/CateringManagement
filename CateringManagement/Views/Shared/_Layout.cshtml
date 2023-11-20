@@ -2,48 +2,106 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - CateringManagement</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/CateringManagement.styles.css" asp-append-version="true" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Catering-Management</title>
+
+
+    <link href="~/admin/css/styles.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/admin/js/main.js" asp-append-version="true"></script>
+    <link href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CateringManagement</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+<body class="sb-nav-fixed">
+    <nav class="sb-topnav navbar navbar-expand sb-sidenav-light">
+        <!-- Navbar Brand-->
+        <a class="navbar-brand ps-3" href="">Catering-Management</a>
+        <!-- Sidebar Toggle-->
+        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+
+        <div class="hi ms-auto d-flex align-items-center">
+            <div>PhongLv</div>
+            <!-- Navbar-->
+            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4 ">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+
+                        <li><a class="dropdown-item" asp-action="DoiMatKhau" asp-controller="Home">Đổi mật khẩu</a></li>
+                        <li><a class="dropdown-item" asp-action="LogOut" asp-controller="Home">Đăng xuất</a></li>
+
                     </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-light" id="sidenavAccordion">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <div class="sb-sidenav-menu-heading">Core</div>
+                        <a class="nav-link" asp-controller="SinhVien" asp-action="Index">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            Dashboard
+                        </a>
+                        <a class="nav-link" asp-controller="Diem" asp-action="Index">
+                            <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
+                            User Management
+                        </a>
+                        <a class="nav-link" asp-controller="MonHoc" asp-action="Index">
+                            <div class="sb-nav-link-icon"><i class="fas fa-book-reader"></i></div>
+                            Storage Management
+                        </a>
+                        <a class="nav-link" asp-controller="Khoa" asp-action="Index">
+                            <div class="sb-nav-link-icon"><i class="fas fa-globe-asia"></i></div>
+                            Ingrediets Managment
+                        </a>
+                        <a class="nav-link" asp-controller="Nghanh" asp-action="Index">
+                            <div class="sb-nav-link-icon"><i class="fas fa-graduation-cap"></i></div>
+                            Food Managment
+                        </a>
+                        <a class="nav-link" asp-controller="Lop" asp-action="Index">
+                            <div class="sb-nav-link-icon"><i class="fas fa-school"></i></div>
+                            Chef Managment
+                        </a>
+                        <a class="nav-link" asp-controller="Lop" asp-action="Index">
+                            <div class="sb-nav-link-icon"><i class="fas fa-school"></i></div>
+                            Order  Managment
+                        </a>
+
+
+                    </div>
                 </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+                <div class="sb-sidenav-footer">
+                    <div class="small">Logged in as:</div>
+                    Phonglv
+
+
+                </div>
+            </nav>
+        </div>
+        <div id="layoutSidenav_content">
             @RenderBody()
-        </main>
+            <footer class="py-4 bg-light mt-auto">
+                <div class="container-fluid px-4">
+                    <div class="d-flex align-items-center justify-content-between small">
+                        <div class="text-muted">Copyright &copy; Your Website 2023</div>
+
+                    </div>
+                </div>
+            </footer>
+        </div>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - CateringManagement - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>
