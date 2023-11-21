@@ -8,8 +8,8 @@ namespace DAL.DomainClass
 {
     public class IngredientImports // Bảng Nhập Nguyên Liệu
     {
-        public Guid? Id { get; set; }
-        public Guid? IngredientId { get; set; }
+        public Guid Id { get; set; }
+        public Guid IngredientId { get; set; }
         public int Quantity { get; set; }
         public DateTime CreateDate { get; set; }
         public DateTime ExpiredDate { get; set; }

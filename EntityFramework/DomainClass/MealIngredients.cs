@@ -10,8 +10,8 @@ namespace DAL.DomainClass
 {
     public class MealIngredients
     {
-        public Guid? Id { get; set; }
-        public Guid? MealId { get; set; }
+        public Guid Id { get; set; }
+        public Guid MealId { get; set; }
         public int Quantity { get; set; }
         [Column(TypeName = "decimal(20, 0)")]
         public decimal Price { get; set; }

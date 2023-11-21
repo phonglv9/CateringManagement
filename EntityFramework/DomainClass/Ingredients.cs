@@ -10,7 +10,7 @@ namespace DAL.DomainClass
 {
     public class Ingredients // Bảng Nguyên Liệu
     {
-        public Guid? Id { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Unit { get; set; }// đơn vị đo lường (ml,gram,kg,..)
         [Column(TypeName = "decimal(20, 0)")]
