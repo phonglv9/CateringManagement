@@ -27,6 +27,21 @@ namespace CateringManagement.Repository
 
             }).ToListAsync();
         }
+        public async Task<string> GetMaxEmployeeId()
+        {
+            var sinhViens = await db.Users
+                .Where(sv => sv.EmployeeId != null && sv.EmployeeId.StartsWith("Us"))
+                .ToListAsync();
+
+            var maxMaSv = sinhViens
+                .Select(sv => sv.EmployeeId.Substring(2))
+                .Where(substring => int.TryParse(substring, out int parsedValue))
+                .Select(parsedValue => parsedValue);
+
+            var result = maxMaSv.Any() ? maxMaSv.Max().ToString() : "0";
+
+            return result;
+        }
 
 
 
