@@ -1,11 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Mvc;
 @using CateringManagement.Helper;
-@using DAL.DomainClass;
 @{
-    var user = CateringManagement.Helper.Commons.GetObjectFromJson<DAL.DomainClass.AppUsers>(Context.Session, "userLogin");
-
+    var user = CateringManagement.Helper.Commons.GetObjectFromJson<DAL.DomainClass.Users>(Context.Session, "userLogin");
     var NameUser = user.LastName +" "+ user.FirstName;
-    int a;
 }
 
 <!DOCTYPE html>

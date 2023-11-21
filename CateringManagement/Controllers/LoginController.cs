@@ -95,5 +95,15 @@ namespace CateringManagement.Controllers
                 throw;
             }
         }
+
+        public IActionResult Logout()
+        {
+            return View();
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
     }
 }
