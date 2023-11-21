@@ -17,8 +17,12 @@ function loadDataUsers() {
             { "data": "LastName" },
             { "data": "Email" },
             { "data": "DateOfBirth" },
-            { "data": "Sex" },
-            { "data": "Status" },
+            { "data": "Sex" },           
+            {
+                "data": null, "render": function (data, type, row) {
+                    return `<td>${row.Status == 1}</td>`;
+                }
+            },
             { "data": "CreateDate" },
             { "data": "UpdateDate" },
             {
