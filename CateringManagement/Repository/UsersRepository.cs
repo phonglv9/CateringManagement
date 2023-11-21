@@ -11,20 +11,20 @@ namespace CateringManagement.Repository
 
         public async Task< List<UsersDTO>> getLstUsers()
         {
-           return await db.Users.Select(user => new UsersDTO
+           return await db.Users.Where(C=>C.IsDeleted != 0 ).Select(user => new UsersDTO
             {
                 EmployeeId = user.EmployeeId,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
-                CreateDate = TextUtils.ConvertDateTimeToString(user.CreateDate),
-                UpdateDate = TextUtils.ConvertDateTimeToString(user.UpdateDate),
+                CreateDate = TextUtils.ConvertDateTimeToString(user.CreatedAt),
+                UpdateDate = TextUtils.ConvertDateTimeToString(user.UpdatedAt),
                 DateOfBirth = TextUtils.ConvertDateToString(user.DateOfBirth),
                 Sex = user.Sex == 1 ? "Male": "Female",
                 Status = user.Status == 1 ? "Active" : "InActive",
                 Image = user.Image
 
-            }).ToListAsync();
+            }).OrderByDescending(c=>c.CreateDate).ToListAsync();
         }
         public async Task<string> GetMaxEmployeeId()
         {

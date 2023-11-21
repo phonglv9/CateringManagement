@@ -8,8 +8,8 @@ namespace DAL.Context
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Data Source=HP\SQLEXPRESS;Initial Catalog=CateringManagement;Integrated Security=True");
-            //optionsBuilder.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=CateringManagement;Integrated Security=True");
+            //optionsBuilder.UseSqlServer(@"Data Source=HP\SQLEXPRESS;Initial Catalog=CateringManagement;Integrated Security=True");
+            optionsBuilder.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=CateringManagement;Integrated Security=True");
 
         }
 

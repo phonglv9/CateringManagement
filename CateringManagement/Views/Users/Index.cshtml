@@ -91,7 +91,17 @@
             </div>
             <div class="modal-body">
 
-                <div id="validationMessage" class="alert alert-danger" role="alert">
+                <div id="validationMessage" class="text-danger" role="alert">
+                </div>
+                <div class="mb-3">
+                    <label for="image" class="form-label">Image</label>
+                    <input type="file" class="form-control" onchange=" return showSelectedImage(this)" id="image">
+                </div>
+                <div id="selectedImageDiv" style="display:none;">
+                    <label class="form-label">Selected Image:</label>
+                    <div>
+                        <img id="selectedImage" style="max-width: 200px; max-height: 200px;" />
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label for="firstName" class="form-label">First Name</label>
@@ -175,16 +185,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="mb-3">
-                    <label for="image" class="form-label">Image</label>
-                    <input type="file" class="form-control" id="image">
-                </div>
-
-
-
-
-
-
+                
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

@@ -4,6 +4,7 @@ using CateringManagement.Repository;
 using DAL.DomainClass;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.ConstrainedExecution;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace CateringManagement.Controllers
@@ -34,8 +35,6 @@ namespace CateringManagement.Controllers
                 
                 var maxid = Convert.ToInt32(await _userRepo.GetMaxEmployeeId()) + 1;
                 Users user = new Users();
-
-                user.Id = Guid.NewGuid();
                 user.EmployeeId  = "Us" + maxid;
                 user.FirstName = userRequest.FirstName;
                 user.LastName = userRequest.LastName;
@@ -44,7 +43,7 @@ namespace CateringManagement.Controllers
                 user.Sex = userRequest.Sex;
                 user.Status = userRequest.Status;
                 user.Role = userRequest.Role;
-                user.CreateDate = DateTime.Now;
+                user.IsDeleted = 1;
                 var uploads = Path.Combine(_env.WebRootPath, "admin/assets/img");
 
                 if (!Directory.Exists(uploads))

@@ -6,7 +6,19 @@
     });
 
 });
+function showSelectedImage(input) {
+    var file = input.files[0];
+    if (file) {
+        var reader = new FileReader();
 
+        reader.onload = function (e) {
+            $('#selectedImage').attr('src', e.target.result);
+            $('#selectedImageDiv').show();
+        }
+
+        reader.readAsDataURL(file);
+    }
+}
 function addUser() {
     var firstName = $('#firstName').val();
     var lastName = $('#lastName').val();
@@ -20,7 +32,7 @@ function addUser() {
     var image = $('#image')[0].files[0]; // Get the file object
 
     // Reset validation messages
-    $('#validationMessage').hide();
+
     $('.validation-error').text('');
 
     // Kiểm tra điều kiện validate
@@ -50,8 +62,8 @@ function addUser() {
             contentType: false, // Important for letting jQuery handle the contentType
             success: function (response) {
                 if (response.status == 1) {
-
                     MessageSucces(response.mess);
+                    loadDataUsers();
                 } else {
                     MessageError(response.mess);
                 }
@@ -64,6 +76,7 @@ function addUser() {
     }
 }
 function loadDataUsers() {
+    $('#tblUsers').dataTable().fnDestroy();
     $('#tblUsers').DataTable({
         "ajax": {
             "url": "/Users/GetListUsers",
