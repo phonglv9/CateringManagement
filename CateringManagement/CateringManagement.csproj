@@ -11,4 +11,9 @@
     <Folder Include="wwwroot\admin\assets\img\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.14" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Runtime" Version="2.1.2" />
+  </ItemGroup>
+
 </Project>
