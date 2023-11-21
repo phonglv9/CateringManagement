@@ -7,13 +7,25 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\Entity\" />
+    <Compile Remove="Models\Entity\**" />
+    <Content Remove="Models\Entity\**" />
+    <EmbeddedResource Remove="Models\Entity\**" />
+    <None Remove="Models\Entity\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="wwwroot\admin\assets\img\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.14" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Runtime" Version="2.1.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="RestSharp" Version="108.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EntityFramework\DAL.csproj" />
   </ItemGroup>
 
 </Project>

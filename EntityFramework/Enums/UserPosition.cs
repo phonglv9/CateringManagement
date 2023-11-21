@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EntityFramework.Enums
+namespace DAL.Enums
 {
     public enum UserPosition
     {

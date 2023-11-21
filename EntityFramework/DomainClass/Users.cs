@@ -1,4 +1,4 @@
-﻿using EntityFramework.Enums;
+﻿using DAL.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -22,6 +22,7 @@ namespace EntityFramework.DomainClass
         [Column(TypeName = "date")]
         public DateTime DateOfBirth { get; set; }
         public int Sex { get; set; }
+        public int Status { get; set; }
         public string? Image { get; set; }
         public UserPosition Role { get; set; } 
 

@@ -21,8 +21,4 @@
     <PackageReference Include="Microsoft.NET.Sdk.Razor" Version="3.1.32" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\CateringManagement\CateringManagement.csproj" />
-  </ItemGroup>
-
 </Project>
