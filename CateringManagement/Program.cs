@@ -1,4 +1,7 @@
+using DAL.Context;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +23,6 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
                 dd.AccessDeniedPath = "/Login/AccessDenied";
             });
 builder.Services.AddAuthorization();
-
 
 var app = builder.Build();
 

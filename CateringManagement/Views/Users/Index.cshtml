@@ -1,12 +1,12 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Users";
 }
 
 
 
 <main>
     <div class="container-fluid px-4 pt-2">
-        <h1 class="mt-4">User Management</h1>
+        <h1 class="mt-4">Users Management</h1>
         <div class="card mb-4">
             <div class="card-header">
                 <div class="row">
@@ -18,9 +18,9 @@
                             <div class="input-group">
 
                                 <select class="form-select" id="status" name="status" style="margin-right:20px;">
-                                <option value="-1">Tất cả</option>
-                                <option value="1">Hoạt động</option>
-                                <option value="0">Không hoạt động</option>
+                                    <option value="-1">Tất cả</option>
+                                    <option value="1">Hoạt động</option>
+                                    <option value="0">Không hoạt động</option>
                                 </select>
                                 <input class="form-control border-end-0 border rounded-pill " type="search" value="@ViewBag.SearchQuery" name="searchQuery" placeholder="nhập để tìm kiếm" id="example-search-input">
                                 <span class="input-group-append">
@@ -49,11 +49,11 @@
                             <th>
                                 Tên sinh viên
                             </th>
-                            
+
                             <th>
                                 CCCD
                             </th>
-                            
+
                             <th>
                                 Email
                             </th>
@@ -74,50 +74,64 @@
                         </tr>
                     </thead>
                     <tbody>
-                       
-                            <tr>
-                                <td>
-                                   
-                                </td>
-                                <td>
-                                 
-                                </td>
-                                <td>
-                                  
-                                </td>
-                                <td>
-                                   
-                                </td>
-                                
-                                <td>
-                                    
-                                </td>
-                                <td>
-                                    
-                                </td>
-                                <td>
-                                   
-                                <td>
-                                  
 
-                                </td>
+                        <tr>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                            </td>
 
-                                <td>
-                                        
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
 
-                                </td>
-                                <td>
-                                    <a class="btn btn-warning" >Sửa</a> |
-                                    <a class="btn btn-danger">Xóa </a>
-                                </td>
-                            </tr>
-                    
+                            <td>
+                            </td>
+
+                            <td>
+                            </td>
+                            <td>
+                                <a class="btn btn-warning">Sửa</a> |
+                                <a class="btn btn-danger">Xóa </a>
+                            </td>
+                        </tr>
+
                     </tbody>
                 </table>
-                </div>
+            </div>
         </div>
     </div>
 </main>
 
-
-
+<div class="modal fade" id="addUser" tabindex="-1" aria-labelledby="addUserLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addUserLabel">AddUser</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Recipient:</label>
+                        <input type="text" class="form-control" id="recipient-name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Message:</label>
+                        <textarea class="form-control" id="message-text"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Send message</button>
+            </div>
+        </div>
+    </div>
+</div>
