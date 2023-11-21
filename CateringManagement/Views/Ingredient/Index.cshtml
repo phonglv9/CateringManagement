@@ -1,0 +1,98 @@
+﻿@{
+    ViewData["Title"] = "Ingredient";
+}
+
+<main>
+    <div class="container-fluid px-4 pt-2">
+        <h1 class="mt-4">Ingredients Management</h1>
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-success text-white p-2" data-bs-toggle="modal" data-bs-target="#addUser">Add Ingredient</button>
+                    </div>
+                    <div class="col-md-4 ms-auto">
+                        <form method="get" asp-action="Index" asp-controller="">
+                            <div class="input-group">
+
+                                <select class="form-select" id="status" name="status" style="margin-right:20px;">
+                                    <option value="-1">Tất cả</option>
+                                    <option value="1">Hoạt động</option>
+                                    <option value="0">Không hoạt động</option>
+                                </select>
+                                <input class="form-control border-end-0 border rounded-pill " type="search" value="" name="searchQuery" placeholder="nhập để tìm kiếm" id="example-search-input">
+                                <span class="input-group-append">
+                                    <button class="btn btn-outline-light bg-primary border-bottom-0 border rounded-pill ms-n5" type="submit">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </span>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered" id="ingredients-table">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Name</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                            <th>Price (USD)</th>
+                            <th>Import Date</th>
+                            <th>Expired Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr></tr>
+                        <tr></tr>
+                        <tr></tr>
+                        <tr></tr>
+                        <tr></tr>
+                        <tr></tr>
+                        <tr></tr>
+                        <tr></tr>
+                        <tr></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div class="modal fade" id="add-ingredient" tabindex="-1" aria-labelledby="addIngredientLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="">Add Ingredient</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Recipient:</label>
+                        <input type="text" class="form-control" id="recipient-name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Message:</label>
+                        <textarea class="form-control" id="message-text"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Send message</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/admin/js/ingredient.js"></script>
+}

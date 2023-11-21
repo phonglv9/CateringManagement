@@ -1,28 +1,22 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using static DAL.Enums.CommonEnum;
 
 namespace DAL.DomainClass
 {
-    public class Ingredients // Bảng Nguyên Liệu
+    public class Ingredients : BaseEntity // Bảng Nguyên Liệu
     {
-        public Guid Id { get; set; }
         public string Name { get; set; }
-        public string Unit { get; set; }// đơn vị đo lường (ml,gram,kg,..)
+        public UnitEnum Unit { get; set; }// đơn vị đo lường (ml,gram,kg,..)
+        [Column(TypeName = "decimal(20, 0)")]
+        public decimal PriceUnit { get; set; }
+        public int Quantity { get; set; }
         [Column(TypeName = "decimal(20, 0)")]
         public decimal Price { get; set; }
-        public int TotalUnit { get; set; }
-        [Column(TypeName = "decimal(20, 0)")]
-        public decimal TotalPrice { get; set; }
 
         public string? Image { get; set; }
 
 
-        public List<IngredientImports>? IngredientImports { get; set; }
-        public List<Meals>? Meals { get; set; }
+        public virtual ICollection<IngredientImports>? IngredientImports { get; set; }
     }
 }

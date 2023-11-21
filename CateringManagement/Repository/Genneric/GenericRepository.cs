@@ -50,7 +50,5 @@ namespace CateringManagement.Repository.Genneric
             table.Remove(await table.FindAsync(id));
             return await db.SaveChangesAsync();
         }
-
-        
     }
 }

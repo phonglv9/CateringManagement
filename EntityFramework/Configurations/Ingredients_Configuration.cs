@@ -14,8 +14,6 @@ namespace DAL.Configurations
         public void Configure(EntityTypeBuilder<Ingredients> builder)
         {
             builder.ToTable("Ingredients");
-            builder.HasKey(x => x.Id);
-            builder.Property(e => e.Id).HasDefaultValueSql("(newid())");
         }
     }
 }
