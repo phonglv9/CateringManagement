@@ -13,7 +13,7 @@ namespace CateringManagement.Controllers
         [HttpGet]
         public async Task <IActionResult> GetListUsers()
         {
-            var lstUser = await _userRepo.GetAllList();
+            var lstUser = await _userRepo.getLstUsers();
             return Json(lstUser, new System.Text.Json.JsonSerializerOptions());          
         }
     }
