@@ -1,9 +1,7 @@
 ﻿using CateringManagement.Common;
 using CateringManagement.Models.DTO;
 using CateringManagement.Repository.Genneric;
-using DAL.Context;
-using EntityFramework.DomainClass;
-using Microsoft.EntityFrameworkCore;
+using DAL.DomainClass;
 
 namespace CateringManagement.Repository
 {
