@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EntityFramework.DomainClass
+namespace DAL.DomainClass
 {
     public class Users : BaseEntity
     {

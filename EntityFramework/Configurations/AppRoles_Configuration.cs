@@ -1,4 +1,4 @@
-﻿using EntityFramework.DomainClass;
+﻿using DAL.DomainClass;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using System;

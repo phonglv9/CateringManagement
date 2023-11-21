@@ -1,5 +1,7 @@
 ﻿using CateringManagement.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using System.Diagnostics;
 
 namespace CateringManagement.Controllers
@@ -13,6 +15,7 @@ namespace CateringManagement.Controllers
             _logger = logger;
         }
 
+        [Authorize(Roles = "reception")]
         public IActionResult Index()
         {
             return View();

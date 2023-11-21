@@ -47,6 +47,9 @@
                                 FirstName
                             </th>
                             <th>
+                                LastName
+                            </th>
+                            <th>
                                 Email
                             </th>
 
@@ -68,7 +71,7 @@
                             </th>
                             <th>
                                 Action
-                                </th>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -80,27 +83,112 @@
 </main>
 
 <div class="modal fade" id="addUser" tabindex="-1" aria-labelledby="addUserLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addUserLabel">AddUser</h5>
+                <h5 class="modal-title" id="addUserLabel">Add User</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">Recipient:</label>
-                        <input type="text" class="form-control" id="recipient-name">
+
+                <div id="validationMessage" class="alert alert-danger" role="alert">
+                </div>
+                <div class="mb-3">
+                    <label for="firstName" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="firstName" >
+                </div>
+                <div class="mb-3">
+                    <label for="lastName" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="lastName" >
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" >
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Role</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="role" id="admin" value="0" >
+                        <label class="form-check-label" for="admin">
+                            Admin
+                        </label>
                     </div>
-                    <div class="mb-3">
-                        <label for="message-text" class="col-form-label">Message:</label>
-                        <textarea class="form-control" id="message-text"></textarea>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="role" id="storage" value="1" >
+                        <label class="form-check-label" for="storage">
+                            Storage
+                        </label>
                     </div>
-                </form>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="role" id="chef" value="2" >
+                        <label class="form-check-label" for="chef">
+                            Chef
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="role" id="reception" value="3" >
+                        <label class="form-check-label" for="reception">
+                            Reception
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" >
+                </div>
+                <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control" id="confirmPassword" >
+                </div>
+                <div class="mb-3">
+                    <label for="dateOfBirth" class="form-label">Date of Birth</label>
+                    <input type="date" class="form-control" id="dateOfBirth">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Sex</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="sex" id="male" value="1">
+                        <label class="form-check-label" for="male">
+                            Male
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="sex" id="female" value="0">
+                        <label class="form-check-label" for="female">
+                            Female
+                        </label>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="status" class="form-label">Status</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="status" id="active" value="1">
+                        <label class="form-check-label" for="active">
+                            Active
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="status" id="inactive" value="0">
+                        <label class="form-check-label" for="inactive">
+                            InActive
+                        </label>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="image" class="form-label">Image</label>
+                    <input type="file" class="form-control" id="image">
+                </div>
+
+
+
+
+
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Send message</button>
+                <button type="button" id="onAddUser" class="btn btn-primary">Add</button>
             </div>
         </div>
     </div>

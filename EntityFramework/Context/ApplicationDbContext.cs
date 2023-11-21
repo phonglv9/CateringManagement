@@ -1,13 +1,6 @@
 ﻿using DAL.Configurations;
 using DAL.DomainClass;
-using EntityFramework.DomainClass;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL.Context
 {
@@ -15,8 +8,8 @@ namespace DAL.Context
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //optionsBuilder.UseSqlServer(@"Data Source=HP\SQLEXPRESS;Initial Catalog=CateringManagement;Integrated Security=True");
-            optionsBuilder.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=CateringManagement;Integrated Security=True");
+            optionsBuilder.UseSqlServer(@"Data Source=HP\SQLEXPRESS;Initial Catalog=CateringManagement;Integrated Security=True");
+            //optionsBuilder.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=CateringManagement;Integrated Security=True");
 
         }
 
