@@ -1,12 +1,12 @@
-﻿using DAL.Context;
+﻿using CateringManagement.Helper;
+using CateringManagement.Models.DTO;
+using DAL.Context;
 using DAL.DomainClass;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using CateringManagement.Models.DTO;
-using CateringManagement.Helper;
-using EntityFramework.DomainClass;
+
 
 namespace CateringManagement.Controllers
 {
@@ -38,14 +38,14 @@ namespace CateringManagement.Controllers
                 #region Đăng nhập khi đã tạo đc user
                 ViewBag.Error = "Đăng nhập không thành công! Vui lòng nhập lại thông tin đăng nhập!";
                 //--Kiểm tra dữ liệu đầu vào
-                if(String.IsNullOrEmpty(user.Email) || String.IsNullOrEmpty(user.password))
+                if (String.IsNullOrEmpty(user.Email) || String.IsNullOrEmpty(user.password))
                 {
                     return Json(new { result = 3 });// Không để rỗng
                 }
                 var Employees = _context.Users.ToList();
                 Users Emp = Employees.FirstOrDefault(c => c.Email.ToLower() == user.Email.ToLower() && c.Password == user.password && c.Status == 1);
 
-                if (Emp == null) 
+                if (Emp == null)
                 {
                     return Json(new { result = 0 });// Không thành công
                 }

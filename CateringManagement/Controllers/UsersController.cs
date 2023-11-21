@@ -1,7 +1,7 @@
 ﻿using CateringManagement.Models.DTO;
 using CateringManagement.Models.Requests;
 using CateringManagement.Repository;
-using EntityFramework.DomainClass;
+using DAL.DomainClass;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using static System.Net.Mime.MediaTypeNames;
@@ -69,9 +69,8 @@ namespace CateringManagement.Controllers
                 }
                 else
                 {
-                    return Json(new ResponseModel { Status = 0, Mess = "Add Failure" });
+                    Json(new ResponseModel { Status = 0, Mess = "Add Failure" });
                 }
-
             }
             return  Json(new ResponseModel { Status = 0, Mess = "Add Failure" });
         }
