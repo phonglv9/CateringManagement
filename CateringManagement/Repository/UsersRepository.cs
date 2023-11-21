@@ -1,5 +1,5 @@
 ﻿using CateringManagement.Repository.Genneric;
-using EntityFramework.DomainClass;
+using DAL.DomainClass;
 
 namespace CateringManagement.Repository
 {

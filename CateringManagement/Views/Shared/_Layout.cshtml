@@ -1,4 +1,14 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Mvc;
+@using CateringManagement.Helper;
+@using DAL.DomainClass;
+@{
+    var user = CateringManagement.Helper.Commons.GetObjectFromJson<DAL.DomainClass.Users>(Context.Session, "userLogin");
+
+    var NameUser = user.LastName +" "+ user.FirstName;
+    int a;
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -26,7 +36,7 @@
         <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
 
         <div class="hi ms-auto d-flex align-items-center">
-            <div>PhongLv</div>
+            <div>@NameUser</div>
             <!-- Navbar-->
             <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4 ">
                 <li class="nav-item dropdown">

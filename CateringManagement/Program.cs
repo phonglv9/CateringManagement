@@ -18,7 +18,7 @@ builder.Services.AddSession(c=>
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(dd =>
             {
-                dd.LoginPath = "/Login/Index";
+                dd.LoginPath = "/Login/Login";
                 dd.LogoutPath = "/Login/logout";
                 dd.AccessDeniedPath = "/Login/AccessDenied";
             });
@@ -45,6 +45,6 @@ app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Login}/{action=Index}/{id?}");
+    pattern: "{controller=Login}/{action=Login}/{id?}");
 
 app.Run();
