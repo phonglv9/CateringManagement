@@ -2,6 +2,8 @@
 using CateringManagement.Models.DTO;
 using CateringManagement.Repository.Genneric;
 using DAL.DomainClass;
+using EntityFramework.DomainClass;
+using Microsoft.EntityFrameworkCore;
 
 namespace CateringManagement.Repository
 {
