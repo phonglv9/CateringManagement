@@ -10,6 +10,8 @@ namespace DAL.DomainClass
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+
+        public string? Image { get; set; }
         public Guid IngredientId { get; set; }
 
         public Ingredients? IngredientId_Navigation { get; set; }

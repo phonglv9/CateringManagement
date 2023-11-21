@@ -22,6 +22,7 @@ namespace EntityFramework.DomainClass
         [Column(TypeName = "date")]
         public DateTime DateOfBirth { get; set; }
         public int Sex { get; set; }
+        public string? Image { get; set; }
         public UserPosition Role { get; set; } 
 
 

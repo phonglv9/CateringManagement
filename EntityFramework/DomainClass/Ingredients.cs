@@ -19,6 +19,8 @@ namespace DAL.DomainClass
         [Column(TypeName = "decimal(20, 0)")]
         public decimal TotalPrice { get; set; }
 
+        public string? Image { get; set; }
+
 
         public List<IngredientImports>? IngredientImports { get; set; }
         public List<Meals>? Meals { get; set; }
