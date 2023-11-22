@@ -1,4 +1,6 @@
-﻿namespace CateringManagement.Models.DTO;
+﻿using static DAL.Enums.CommonEnum;
+
+namespace CateringManagement.Models.DTO;
 
 public class IngredientDTO
 {
@@ -7,7 +9,6 @@ public class IngredientDTO
     public string Unit { get; set; }
     public int Quantity { get; set; }
     public decimal Price { get; set; }
-    public string ImportDate { get; set; }
-    public string ExpiredDate { get; set; }
-    public string Status { get; set; }
+    public decimal UnitPrice { get; set; }
+    public StatusEnum Status { get; set; }
 }

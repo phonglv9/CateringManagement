@@ -1,7 +1,9 @@
-﻿using CateringManagement.Models.DTO;
+﻿using CateringManagement.Helper;
+using CateringManagement.Models.DTO;
 using CateringManagement.Repository.Genneric;
 using DAL.DomainClass;
 using Microsoft.EntityFrameworkCore;
+using static DAL.Enums.CommonEnum;
 
 namespace CateringManagement.Repository
 {
@@ -14,13 +16,11 @@ namespace CateringManagement.Repository
                 {
                     Id = x.Id,
                     Name = x.Name,
-                    Unit = "",
+                    Unit = IngredientHelper.GetUnitName(x.Unit),
                     Quantity = x.Quantity,
                     Price = x.Price,
-                    ImportDate = "",
-                    ExpiredDate = "",
-                    Status = ""
-
+                    UnitPrice = x.PriceUnit,
+                    Status = x.Quantity > 0 ? StatusEnum.Available : StatusEnum.Unavailable
                 })
                 .ToListAsync();
 

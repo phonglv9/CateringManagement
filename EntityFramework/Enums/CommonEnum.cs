@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace DAL.Enums
 {
@@ -12,10 +7,19 @@ namespace DAL.Enums
         public enum UnitEnum
         {
             [Description("Milliter")]
-            Ml = 0,
+            Ml = 1,
 
             [Description("Gram")]
-            Gram = 1,
+            Gram = 2,
+        }
+
+        public enum StatusEnum
+        {
+            [Description("Unavailable")]
+            Unavailable = 0,
+
+            [Description("Available")]
+            Available = 1,
         }
     }
 }
