@@ -4,6 +4,8 @@ using DAL.Context;
 using DAL.DomainClass;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -92,13 +94,17 @@ namespace CateringManagement.Controllers
             catch (Exception)
             {
 
-                throw;
+                throw; 
             }
         }
 
-        public IActionResult Logout()
+        [Authorize(Roles = "admin, storage, chef, reception")]
+        public async Task<IActionResult> Logout()
         {
-            return View();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            HttpContext.Session.Remove("userLogin");
+            HttpContext.Session.Remove("myRole");
+            return Redirect("/");
         }
 
         public IActionResult AccessDenied()
