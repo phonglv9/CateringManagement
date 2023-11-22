@@ -8,6 +8,7 @@ namespace DAL.DomainClass
         public string CustomerPhone { get; set; }
         public OrderStatus Status { get; set; }
         public DateTime PickupTime { get; set; } // thời gian dự kiến lấy hàng
+        public decimal TotalPrice { get; set; }
 
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
 
