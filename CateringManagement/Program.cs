@@ -15,11 +15,13 @@ builder.Services.AddSession(c=>
     c.Cookie.IsEssential = true;
 });
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(dd =>
             {
                 dd.LoginPath = "/Login/Login";
-                dd.LogoutPath = "/Login/logout";
+                dd.LogoutPath = "/Login/Logout";
                 dd.AccessDeniedPath = "/Login/AccessDenied";
             });
 builder.Services.AddAuthorization();

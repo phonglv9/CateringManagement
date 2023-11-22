@@ -1,8 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Mvc;
 @using CateringManagement.Helper;
 @{
-    // var user = CateringManagement.Helper.Commons.GetObjectFromJson<DAL.DomainClass.Users>(Context.Session, "userLogin");
-    //var NameUser = user.LastName +" "+ user.FirstName;
+    var user = CateringManagement.Helper.Commons.GetObjectFromJson<DAL.DomainClass.Users>(Context.Session, "userLogin");
+    //var NameUser = user.LastName + " " + user.FirstName;
     var NameUser = "";
 }
 
@@ -43,8 +43,8 @@
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
 
-                        <li><a class="dropdown-item" asp-action="DoiMatKhau" asp-controller="Home">Đổi mật khẩu</a></li>
-                        <li><a class="dropdown-item" asp-action="LogOut" asp-controller="Home">Đăng xuất</a></li>
+                        <li><a class="dropdown-item" href="/Users/ChangePassword">Đổi mật khẩu</a></li>
+                        <li><a class="dropdown-item" href="/Login/Logout">Đăng xuất</a></li>
 
                     </ul>
                 </li>

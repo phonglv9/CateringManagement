@@ -15,7 +15,6 @@ namespace CateringManagement.Controllers
             _logger = logger;
         }
 
-        [Authorize(Roles = "reception")]
         public IActionResult Index()
         {
             return View();
