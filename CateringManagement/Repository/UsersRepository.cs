@@ -6,25 +6,33 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CateringManagement.Repository
 {
-    public class UsersRepository: GenericRepository<Users>
+    public class UsersRepository : GenericRepository<Users>
     {
 
-        public async Task< List<UsersDTO>> getLstUsers()
+        public async Task<List<UsersDTO>> getLstUsers()
         {
-           return await db.Users.Where(C=>C.IsDeleted != 0 ).Select(user => new UsersDTO
+            try
             {
-                EmployeeId = user.EmployeeId,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                CreateDate = TextUtils.ConvertDateTimeToString(user.CreatedAt),
-                UpdateDate = TextUtils.ConvertDateTimeToString(user.UpdatedAt),
-                DateOfBirth = TextUtils.ConvertDateToString(user.DateOfBirth),
-                Sex = user.Sex == 1 ? "Male": "Female",
-                Status = user.Status == 1 ? "Active" : "InActive",
-                Image = user.Image
+                return await db.Users.Where(C => C.IsDeleted != 0).Select(user => new UsersDTO
+                {
+                    EmployeeId = user.EmployeeId,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    CreateDate =  null, //TextUtils.ConvertDateTimeToString(user.CreatedAt),
+                    UpdateDate = null, //TextUtils.ConvertDateTimeToString(user.UpdatedAt),
+                    DateOfBirth = TextUtils.ConvertDateToString(user.DateOfBirth),
+                    Sex = user.Sex == 1 ? "Male" : "Female",
+                    Status = user.Status == 1 ? "Active" : "InActive",
+                    Image = user.Image
 
-            }).OrderByDescending(c=>c.CreateDate).ToListAsync();
+                }).OrderByDescending(c => c.CreateDate).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
         public async Task<string> GetMaxEmployeeId()
         {
