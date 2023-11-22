@@ -185,7 +185,7 @@
         </div>
     </div>
 </div>
-<script>
+<script type="text/javascript">
     $(document).ready(function () {
 
         loadDataUsers();
@@ -202,6 +202,77 @@
 
 
     });
+    function validateForm() {
+    let isValid = true;
+    $('#validationMessage').empty(); // Clear previous validation messages
+
+    // Validation for image
+    const image = $('#image').val();
+    if (!image) {
+        $('#validationMessage').text('Please select an image.');
+        isValid = false;
+    }
+
+    // Validation for first name
+    const firstName = $('#firstName').val();
+    if (!firstName.trim()) {
+        $('#validationMessage').text('Please enter your first name.');
+        isValid = false;
+    }
+
+    // Validation for last name
+    const lastName = $('#lastName').val();
+    if (!lastName.trim()) {
+        $('#validationMessage').text('Please enter your last name.');
+        isValid = false;
+    }
+
+    // Validation for email
+    const email = $('#email').val();
+    const emailRegex = '/^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/';
+    if (!emailRegex.test(email)) {
+        $('#validationMessage').text('Please enter a valid email address.');
+        isValid = false;
+    }
+
+    // // Validation for role selection
+    // const role = $('#role').val();
+    // if (!role) { // Assuming 'Admin' is the default value
+    //     $('#validationMessage').text('Please select a role.');
+    //     isValid = false;
+    // }
+
+    // Validation for password and confirm password
+    const password = $('#password').val();
+    const confirmPassword = $('#confirmPassword').val();
+    if (password !== confirmPassword) {
+        $('#validationMessage').text('Passwords do not match.');
+        isValid = false;
+    }
+
+    // Validation for date of birth
+    const dateOfBirth = $('#dateOfBirth').val();
+    if (!dateOfBirth) {
+        $('#validationMessage').text('Please enter your date of birth.');
+        isValid = false;
+    }
+
+    // Validation for gender selection
+    const gender = $('input[name="sex"]:checked').val();
+    if (!gender) {
+        $('#validationMessage').text('Please select your gender.');
+        isValid = false;
+    }
+
+    // Validation for status selection
+    const status = $('input[name="status"]:checked').val();
+    if (!status) {
+        $('#validationMessage').text('Please select a status.');
+        isValid = false;
+    }
+
+    return isValid;
+}
     function onDeleteUser(id) {
         Swal.fire({
             title: 'Are you sure you want to delete this user??',
@@ -245,6 +316,9 @@
         }
     }
     function addUser() {
+        if (!validateForm()) {
+            return;
+        }
         var firstName = $('#firstName').val();
         var lastName = $('#lastName').val();
         var email = $('#email').val();
