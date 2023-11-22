@@ -86,9 +86,9 @@
             success: function (response) {
                 console.log(response);
                 if (response.result == 1) {
-                    setTimeout(function () {
+                  
                         window.location.href = "/Home/Index";
-                    }, 1500);
+                 
                 } else if (response.result == 0) {
                     swal("Notification!", "Incorrect account or password!", "error");
                 } else if (response.result == 3) {
