@@ -10,13 +10,13 @@ namespace CateringManagement.Repository
     public class UsersRepository : GenericRepository<Users>
     {
 
-        public async Task<List<UsersDTO>> getLstUsers(int? role,string? searching)
+        public async Task<List<UsersDTO>> getLstUsers(int? role, string? searching)
         {
             try
             {
                 var query = db.Users.Where(u => u.IsDeleted != 1);
 
-                if (role.HasValue && role !=  -1)
+                if (role.HasValue && role != -1)
                 {
                     query = query.Where(u => ((int)u.Role) == role);
                 }
@@ -47,6 +47,7 @@ namespace CateringManagement.Repository
 
                 }).OrderByDescending(c => c.CreateDate).ToListAsync();
 
+
                 return lstUsers;
             }
             catch (Exception ex)
@@ -72,7 +73,7 @@ namespace CateringManagement.Repository
 
         public async Task<int> DeleteUserByEmployeeId(string employeeId)
         {
-            var user =  await db.Users.Where(c => c.EmployeeId == employeeId).FirstOrDefaultAsync();
+            var user = await db.Users.Where(c => c.EmployeeId == employeeId).FirstOrDefaultAsync();
             if (user != null)
             {
                 user.IsDeleted = 1;
@@ -80,6 +81,19 @@ namespace CateringManagement.Repository
             }
 
             return 0;
+        }
+        public async Task<Users> GetUserEmployeeId(string employeeId)
+        {
+            try
+            {
+                var user = await db.Users.Where(c => c.EmployeeId == employeeId).FirstOrDefaultAsync();
+                return user;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
 
 
