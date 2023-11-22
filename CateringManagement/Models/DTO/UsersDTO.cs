@@ -14,6 +14,7 @@ namespace CateringManagement.Models.DTO
         public string DateOfBirth { get; set; }
         public string Sex { get; set; }
         public string Status { get; set; }
+        public string Role { get; set; }
         public string? Image { get; set; }
     }
 }
