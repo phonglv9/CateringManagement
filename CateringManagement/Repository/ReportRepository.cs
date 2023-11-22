@@ -19,7 +19,7 @@ namespace CateringManagement.Repository
             //Duyệt qua từng ngày và tính toán doanh thu, tổng đơn hàng
             foreach (var date in dates)
             {
-                var revenue =  db.Orders
+                var revenue =   db.Orders
                             .Where(od => od.CreatedAt.Date == date.Date && od.Status == OrderStatus.Done)
                 .Sum(od => od.TotalPrice);
 
