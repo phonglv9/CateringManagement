@@ -27,6 +27,12 @@ namespace CateringManagement.Controllers
             var lstUser = await _userRepo.getLstUsers(role, searching);
             return Json(lstUser, new System.Text.Json.JsonSerializerOptions());
         }
+        [HttpGet]
+        public async Task<IActionResult> GetUserByEmployeeId(string employeeId)
+        {
+            var user = await _userRepo.GetUserEmployeeId(employeeId);
+            return Json(user, new System.Text.Json.JsonSerializerOptions());
+        }
         [HttpPost]
         public async Task<IActionResult> AddUser([FromForm] UserCreateRequest userRequest, IFormFile image)
         {
@@ -41,6 +47,7 @@ namespace CateringManagement.Controllers
                 user.Email = userRequest.Email;
                 user.Password = userRequest.Password;
                 user.DateOfBirth = userRequest.DateOfBirth;
+                user.CreatedAt = DateTime.Now;
                 user.Sex = userRequest.Sex;
                 user.Status = userRequest.Status;
                 user.Role = userRequest.Role;
@@ -73,6 +80,61 @@ namespace CateringManagement.Controllers
                 }
             }
             return Json(new ResponseModel { Status = 0, Mess = "Add Failure" });
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditUser([FromForm] UserEditRequest userRequest, IFormFile image)
+        {
+            if (userRequest.EmployeeId != null)
+            {
+                var user = await _userRepo.GetUserEmployeeId(userRequest.EmployeeId);
+                if (user != null)
+                {
+                    user.FirstName = userRequest.FirstName;
+                    user.LastName = userRequest.LastName;
+                    user.Email = userRequest.Email;
+                    user.Password = userRequest.Password;
+                    user.DateOfBirth = userRequest.DateOfBirth;
+                    user.UpdatedAt = DateTime.Now;
+                    user.Sex = userRequest.Sex;
+                    user.Status = userRequest.Status;
+                    user.Role = userRequest.Role;
+
+                    if (image != null)
+                    {
+                        var uploads = Path.Combine(_env.WebRootPath, "admin/assets/img");
+
+                        if (!Directory.Exists(uploads))
+                        {
+                            Directory.CreateDirectory(uploads);
+                        }
+                        string extension = Path.GetExtension(image.FileName);
+                        var fileName = user.EmployeeId + extension;
+                        var filePath = Path.Combine(uploads, fileName);
+
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await image.CopyToAsync(stream);
+                        }
+                        user.Image = fileName;
+
+                    }
+
+                    var result = await _userRepo.Update(user);
+                    if (result > 0)
+                    {
+
+
+                        return Json(new ResponseModel { Status = 1, Mess = "Update Success" });
+                    }
+                    else
+                    {
+                        return Json(new ResponseModel { Status = 0, Mess = "Update Failure" });
+                    }
+
+
+                }
+            }
+            return Json(new ResponseModel { Status = 0, Mess = "Update Failure" });
         }
 
         public async Task<IActionResult> DeleteUser(string userId)
