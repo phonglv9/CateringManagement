@@ -1,4 +1,5 @@
 ﻿using CateringManagement.Models;
+using CateringManagement.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
@@ -9,6 +10,7 @@ namespace CateringManagement.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        ReportRepository _reportRepo;
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -18,6 +20,13 @@ namespace CateringManagement.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+        [HttpGet]
+        public async Task< IActionResult> GetReportData(DateTime dateStart, DateTime dateEnd)
+        {
+            var reports = await _reportRepo.GetDataReport(dateStart, dateEnd);
+
+            return Json(reports);
         }
 
         public IActionResult Privacy()
