@@ -10,6 +10,7 @@
                 <div class="row">
                     <div class="col-md-2">
                         <button type="button" class="btn btn-success text-white p-2" id="add-btn">Add Ingredient</button>
+                        <button type="button" class="btn btn-primary text-white p-2" id="add-quantity-btn">Add Quantity</button>
                     </div>
                     <div class="col-md-4 ms-auto">
                     </div>
@@ -66,12 +67,121 @@
                             </div>
                         </div>
                     </div>
-                    
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-primary" id="save-btn">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="edit-ingredient-modal" tabindex="-1" aria-labelledby="editIngredientLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="">Edit Ingredient</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input hidden id="id-edit" />
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Name:</label>
+                        <input type="text" class="form-control" id="name-edit" value="">
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Unit:</label>
+                        <input type="text" class="form-control" id="unit-edit" value="" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Unit price:</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="unit-price-edit" placeholder="Unit price" aria-describedby="basic-addon2" disabled>
+                            <div class="input-group-append">
+                                <span class="input-group-text">USD</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="update-btn" onclick="updateIngredient()">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="delete-ingredient-modal" tabindex="-1" aria-labelledby="deleteIngredientLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="">Delete Ingredient</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input hidden id="id-delete" />
+                    <div class="mb-1">
+                        <label for="recipient-name" class="col-form-label">Name:</label>
+                        <span id="name-delete" value=""></span>
+                    </div>
+                    <div class="mb-1">
+                        <label for="message-text" class="col-form-label">Unit:</label>
+                        <span id="unit-delete" value=""></span>
+                    </div>
+                    <div class="mb-1">
+                        <label for="message-text" class="col-form-label">Unit price:</label>
+                        <span id="unit-price-delete" value=""></span> USD
+                    </div>
+                    <br />
+                    <div>Are you sure to delete this ingredient?</div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="delete-btn" onclick="deleteIngredient()">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="add-quantity-modal" tabindex="-1" aria-labelledby="addQuantityLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="">Add Ingredients To Storage</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input hidden id="selected-ingredient-import" />
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Ingredient:</label>
+                        <select class="form-select" aria-label="Select ingredient" id="select-ingredient">
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Quantity:</label>
+                        <input type="number" class="form-control" id="quantity" value="0">
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Total price:</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="total-price" placeholder="Total price" aria-describedby="basic-addon2" disabled>
+                            <div class="input-group-append">
+                                <span class="input-group-text">USD</span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="import-ingredient-btn">Save</button>
             </div>
         </div>
     </div>

@@ -27,7 +27,7 @@ namespace CateringManagement.Repository.Genneric
             return await table.ToListAsync();
         }
 
-        public async Task<T> GetByID(int id)
+        public async Task<T> GetByID(Guid id)
         {
             return await table.FindAsync(id);
         }
@@ -45,7 +45,7 @@ namespace CateringManagement.Repository.Genneric
             return await db.SaveChangesAsync();
         }
 
-        public async Task<int> Delete(int id)
+        public async Task<int> Delete(Guid id)
         {
             table.Remove(await table.FindAsync(id));
             return await db.SaveChangesAsync();

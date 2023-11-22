@@ -3,7 +3,6 @@ using CateringManagement.Models.DTO;
 using CateringManagement.Repository.Genneric;
 using DAL.DomainClass;
 using Microsoft.EntityFrameworkCore;
-using static DAL.Enums.CommonEnum;
 
 namespace CateringManagement.Repository
 {
@@ -20,12 +19,11 @@ namespace CateringManagement.Repository
                     Quantity = x.Quantity,
                     Price = x.Price,
                     UnitPrice = x.PriceUnit,
-                    Status = x.Quantity > 0 ? StatusEnum.Available : StatusEnum.Unavailable
+                    Status = x.Quantity > 0 ? "Available" : "Unavailable"
                 })
                 .ToListAsync();
 
             return data;
         }
-
     }
 }
