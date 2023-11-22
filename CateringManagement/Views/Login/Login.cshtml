@@ -86,16 +86,15 @@
             success: function (response) {
                 console.log(response);
                 if (response.result == 1) {
-                    swal("Thành công", "Đăng nhập thành công", "success");
                     setTimeout(function () {
                         window.location.href = "/Home/Index";
-                    }, 2000);
+                    }, 1500);
                 } else if (response.result == 0) {
-                    swal("Thông báo!", "Tài khoản hoặc mật khẩu không chính xác!", "error");
+                    swal("Notification!", "Incorrect account or password!", "error");
                 } else if (response.result == 3) {
-                    swal("Thông báo!", "Vui lòng không để trống!", "error");
+                    swal("Notification!", "Please do not leave it blank!", "error");
                 }else{
-                    swal("Thông báo!", "Liên hệ quản trị để xử lý!", "error");
+                    swal("Notification!", "Contact administrator for processing!", "error");
 
                 }
             },

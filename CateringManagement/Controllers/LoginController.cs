@@ -38,7 +38,6 @@ namespace CateringManagement.Controllers
             try
             {
                 #region Đăng nhập khi đã tạo đc user
-                ViewBag.Error = "Đăng nhập không thành công! Vui lòng nhập lại thông tin đăng nhập!";
                 //--Kiểm tra dữ liệu đầu vào
                 if (String.IsNullOrEmpty(user.Email) || String.IsNullOrEmpty(user.password))
                 {
