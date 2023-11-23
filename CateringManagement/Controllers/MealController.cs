@@ -139,12 +139,12 @@ namespace CateringManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateMeal([FromBody] MealUpdateRequest request, Guid id)
         {
-            var meal = await _context.Meals.FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted == 0);
+            var meal = await _context.Meals
+                .FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted == 0);
             if (meal == null)
             {
                 return Json(new ResponseModel { Status = 0, Mess = "Meal not found" });
             }
-            var oldMealIngredients = await _context.MealIngredients.Where(x => x.MealId == id && x.IsDeleted == 0).ToListAsync();
 
             // validate
             if (string.IsNullOrEmpty(request.Name))
@@ -165,12 +165,15 @@ namespace CateringManagement.Controllers
             }
 
             List<MealIngredients> ingredientData = new();
+            var oldMealIngredients = await _context.MealIngredients.Where(x => x.MealId == id && x.IsDeleted == 0).ToListAsync();
+
             decimal price = 0;
             foreach (var item in request.Ingredients)
             {
                 var ingredient = ingredients.First(x => x.Id == item.IngredientId);
                 ingredientData.Add(new MealIngredients
                 {
+                    MealId = meal.Id,
                     IngredientId = ingredient.Id,
                     Quantity = item.Quantity
                 });
@@ -179,16 +182,16 @@ namespace CateringManagement.Controllers
 
             meal.Name = request.Name;
             meal.Price = price;
-            meal.MealIngredients = null;
 
             try
             {
                 await _mealsRepo.DeleteMealIngredientList(oldMealIngredients);
                 await _mealsRepo.InsertMealIngredientList(ingredientData);
                 await _mealsRepo.Update(meal);
+
                 return Json(new ResponseModel { Status = 1, Mess = "Update meal successfully" });
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Json(new ResponseModel { Status = 0, Mess = "Update meal failed" });
             }
@@ -205,9 +208,12 @@ namespace CateringManagement.Controllers
 
             meal.IsDeleted = 1;
 
+            var mealIngredients = await _context.MealIngredients.Where(x => x.MealId == id && x.IsDeleted == 0).ToListAsync();
+
             try
             {
                 await _mealsRepo.Update(meal);
+                await _mealsRepo.DeleteMealIngredientList(mealIngredients);
                 return Json(new ResponseModel { Status = 1, Mess = "Delete meal successfully" });
             }
             catch (Exception e)

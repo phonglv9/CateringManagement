@@ -110,7 +110,7 @@ function addIngredientToTable(mode = '') {
     // increase price
     $('#price' + mode).val(mealPrice + rowPrice);
 
-    let htmlRow = `<tr id="ingredient-row${mode}-${ingredientId}" data-row-id="${ingredientId}" data-row-quantity="${quantity}">`;
+    let htmlRow = `<tr id="ingredient-row${mode}-${ingredientId}" data-row-id="${ingredientId}" class="has-data" data-row-quantity="${quantity}">`;
     htmlRow += `<td>${ingredientName}</td>`;
     htmlRow += `<td>${quantity}</td>`;
     htmlRow += `<td>${ingredientUnit}</td>`;
@@ -154,13 +154,22 @@ function removeIngredientFromTable(id, removedPrice, mode = '') {
 function addMeal() {
     var ingredientArr = [];
 
-    $('#meals-table-body tr').each(function (index, value) {
+    if ($('#name').val() == '') {
+        toastr.error("Please enter name", "Error");
+        return;
+    }
+
+    $('#meals-table-body tr.has-data').each(function (index, value) {
         ingredientArr.push({
             IngredientId: $(this).attr('data-row-id'),
             Quantity: parseInt($(this).attr('data-row-quantity'))
         });
     });
-    console.log(ingredientArr);
+
+    if (ingredientArr.length == 0) {
+        toastr.error("Please add the ingredient", "Error");
+        return;
+    }
 
     var dataObj = {
         Name: $('#name').val(),
@@ -259,7 +268,7 @@ function getDetailForEditModal(id) {
                 let htmlRow = ``;
                 let ingredients = result.data.ingredients;
                 $.each(ingredients, function (index, item) {
-                    htmlRow += `<tr id="ingredient-row-edit-${item.ingredientId}" data-row-id="${item.ingredientId}" data-row-quantity="${item.quantity}">`;
+                    htmlRow += `<tr id="ingredient-row-edit-${item.ingredientId}" data-row-id="${item.ingredientId}" class="has-data" data-row-quantity="${item.quantity}">`;
                     htmlRow += `<td>${item.name}</td>`;
                     htmlRow += `<td>${item.quantity}</td>`;
                     htmlRow += `<td>${item.unit}</td>`;
@@ -325,13 +334,22 @@ function showEditModal(id) {
 function updateMeal(id) {
     var ingredientArr = [];
 
-    $('#meals-table-body-edit tr').each(function (index, value) {
+    $('#meals-table-body-edit tr.has-data').each(function (index, value) {
         ingredientArr.push({
             IngredientId: $(this).attr('data-row-id'),
             Quantity: parseInt($(this).attr('data-row-quantity'))
         });
     });
-    console.log(ingredientArr);
+
+    if (ingredientArr.length == 0) {
+        toastr.error("Please add the ingredient", "Error");
+        return;
+    }
+
+    if ($('#name-edit').val() == '') {
+        toastr.error("Please enter name", "Error");
+        return;
+    }
 
     var dataObj = {
         Name: $('#name-edit').val(),

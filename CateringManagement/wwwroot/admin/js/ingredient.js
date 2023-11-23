@@ -189,6 +189,8 @@ function deleteIngredient() {
 }
 
 function showAddQuantityModal(id) {
+    $('#total-price').val(0);
+
     $.ajax({
         url: "/Ingredient/GetSimpleListIngredients",
         type: "GET",
