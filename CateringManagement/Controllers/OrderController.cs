@@ -1,5 +1,7 @@
 ﻿using DAL.Context;
+using DAL.DomainClass;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CateringManagement.Controllers
 {
@@ -17,7 +19,7 @@ namespace CateringManagement.Controllers
             var lstOrders = _context.Orders.ToList();
             if (sName != null)
             {
-                lstOrders = lstOrders.Where(c => c.CustomerName.ToLower().Trim().Contains(sName) && c.IsDeleted == 0).ToList();
+                lstOrders = lstOrders.Where(c => c.OrderCode.ToLower().Contains(sName.ToLower()) && c.IsDeleted == 0).ToList();
             }
             if (status == "0" || status == "1")
             {
@@ -44,7 +46,16 @@ namespace CateringManagement.Controllers
             return View(lstOrders);
         }
 
-        
+        [HttpPost]
+        public async Task<IActionResult> Deleted(string Id)
+        {
+            Orders order = await _context.Orders.FirstOrDefaultAsync(c=>c.Id == Guid.Parse(Id) && c.IsDeleted == 0);
+            if(order == null) return Json(new { result = 0 });
+            order.IsDeleted = 1;
+            _context.Orders.Update(order);
+            _context.SaveChanges();
+            return Json(new { result = 1 });
+        }
 
     }
 }

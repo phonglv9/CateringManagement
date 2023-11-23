@@ -20,7 +20,7 @@
                     <div class="col-md-10 ms-auto">
                         <form id="Searchform" name="searchForm" method="post" class="form-horizontal" action="/Order/Index">
                             <div class="input-group">
-                                <input type="text" id="sName" name="sName" class="form-control" value="@ViewData["sName"]" style="margin-right: 10px;" placeholder="Enter Name...">
+                                <input type="text" id="sName" name="sName" class="form-control" value="@ViewData["sName"]" style="margin-right: 10px;" placeholder="Enter Order Id...">
                                 <label style="margin-right: 10px; padding-top: 5px;">From</label>
                                 <input type="date" id="fromDate" name="fromDate" class="form-control" value="@ViewData["fromDate"]">
                                 <label style="margin-left: 10px;margin-right: 10px;padding-top: 5px;">To</label>
@@ -74,7 +74,7 @@
                         @if (Model != null)
                         {
                             int i = 1;
-                            @foreach (var item in Model)
+                            @foreach (var item in Model.Where(c => c.IsDeleted == 0))
                             {
                                 <tr>
                                     <td>@i</td>
@@ -87,9 +87,15 @@
                                     <td>
                                         <button class="btn btn-info" onclick="ViewDetailDataOrder('@item.Id')" />
                                         <i class="fas fa-pen-square" aria-hidden="true"></i>
-                                        <button class="btn btn-danger delete" onclick="deleteObject('@item.Id')">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
+                                        @if (item.Status != 0)
+                                        {
+                                            <form id="formDeleted">
+                                                <input type="hidden" id="idOrder" value="@item.Id" />
+                                                <button class="btn btn-danger delete">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </form>
+                                        }
                                     </td>
                                 </tr>
                                 i++;
@@ -218,4 +224,36 @@
             loadDataUsers(valRole, valSearch)
         });
     });
+
+    $(document).ready(function () {
+        $("#formDeleted").submit(function (e) {
+            e.preventDefault(); // Ngăn chặn sự kiện mặc định của form
+            IsDeleted();
+        });
+    });
+    function IsDeleted() {
+        var Id = $("#idOrder").val();
+        $.ajax({
+            type: "POST",
+            url: `/Order/Deleted?Id=${Id}`,
+            data: JSON.stringify({ id: Id }),
+            contentType: "application/json;",
+            dataType: "json",
+            success: function (response) {
+                console.log(response);
+                if (response.result == 1) {
+                    toastr.success("Delete successfully", "Success!");
+                    setTimeout(function () {
+                        window.location.href = "/Order/Index";
+                    }, 1000);
+                } else {
+                    toastr.error("Please contact the administrator for processing!", "Notification!");
+                }
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
+
 </script>
