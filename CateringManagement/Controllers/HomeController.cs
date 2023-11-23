@@ -24,6 +24,7 @@ namespace CateringManagement.Controllers
         [HttpGet]
         public async Task< IActionResult> GetReportData(DateTime dateStart, DateTime dateEnd)
         {
+ 
             var reports = await _reportRepo.GetDataReport(dateStart, dateEnd);
 
             return Json(reports);

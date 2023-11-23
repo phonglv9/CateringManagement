@@ -1,25 +1,40 @@
-﻿document.getElementById("date_start").addEventListener("change", function () {
-    var startDate = new Date(this.value);
-    var oneMonthAfterStart = new Date(startDate);
-    oneMonthAfterStart.setMonth(oneMonthAfterStart.getMonth() + 1);
-    var endDateInput = document.getElementById("date_end");
-    endDateInput.value = "";
-    endDateInput.setAttribute("min", this.value);
-    endDateInput.setAttribute("max", oneMonthAfterStart.toISOString().split('T')[0]);
+﻿$(document).ready(function () {
+    GetFillterReprort();
+    $("#btnExport").click(function () {
+        let table = document.getElementsByTagName("table");
+        TableToExcel.convert(table[0], {
+            name: `Report.xlsx`,
+            sheet: {
+                name: 'Report'
+            }
+        });
+    });
+    $('#date_start').change(function () {
+        var startDate = new Date(this.value);
+        var oneMonthAfterStart = new Date(startDate);
+        oneMonthAfterStart.setMonth(oneMonthAfterStart.getMonth() + 1);
+        var endDateInput = document.getElementById("date_end");
+        endDateInput.value = "";
+        endDateInput.setAttribute("min", this.value);
+        endDateInput.setAttribute("max", oneMonthAfterStart.toISOString().split('T')[0]);
+    })
 });
 var myChart;
 function GetFillterReprort() {
-    var dateStart = moment($('#date_start').val()).format('DD/MM/YYYY');
-    var dateEnd = moment($('#date_end').val()).format('DD/MM/YYYY');
-    $('#text-date').text(`Từ ${dateStart} đến ${dateEnd}:`);
+
     var dateStart = moment($('#date_start').val());
     var dateEnd = moment($('#date_end').val());
 
+    if (!dateStart.isValid() || !dateEnd.isValid() ) {
+        toastr.error('No value date !', "Error");
+        return;
+    }
     if (dateStart.isAfter(dateEnd)) {
-        MessageError('The start date must be less than the end date');
+        toastr.error('The start date must be less than the end date', "Error");
         return;
     }
     $('#text-date').text(`From ${dateStart.format('DD/MM/YYYY')} to ${dateEnd.format('DD/MM/YYYY')}:`);
+ 
     $.ajax({
         url: '/Home/GetReportData',
         type: 'GET',
@@ -64,23 +79,23 @@ function GetFillterReprort() {
                 myChart.destroy();
             }
             myChart = new Chart(ctx, {
-                type: 'bar',
+                type: 'line',
                 data: {
                     labels: labels,
                     datasets: [
                         {
                             label: 'Oder',
                             data: orders,
-                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                            borderColor: 'rgba(255, 99, 132, 1)',
+                            backgroundColor: '#E31837',
+                            borderColor: '#E31837',
                             borderWidth: 1
 
                         },
                         {
                             label: 'Revenue',
                               data: revenues,
-                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: '#0039a6',
+                            borderColor: '#0039a6',
                             borderWidth: 1
                         }
                     ]
@@ -99,8 +114,6 @@ function GetFillterReprort() {
                     tooltips: {
                         callbacks: {
                             label: function (tooltipItem, data) {
-                                console.log(tooltipItem);
-                                console.log(data);
                                 var label = data.labels[tooltipItem.index];
                                 label = moment(label).format('DD/MM/YYYY');
                                 return label + ': ' + tooltipItem.yLabel;
@@ -113,9 +126,5 @@ function GetFillterReprort() {
         }
     });
 }
-$(document).ready(function () {
 
-    GetFillterReprort();
-
-});
 

@@ -18,7 +18,7 @@
 //Hiển thị sweet alert lỗi
 function MessageError(text) {
     Swal.fire({
-        title: "Thông báo",
+        title: "Notification",
         icon: 'error',
         text: text,
         button: false,
@@ -29,7 +29,7 @@ function MessageError(text) {
 //Hiển thị sweet alert thành công
 function MessageSucces(text) {
     Swal.fire({
-        title: 'Thông báo',
+        title: 'Notification',
         text: text,
         button: false,
         icon: 'success',
@@ -40,7 +40,7 @@ function MessageSucces(text) {
 //Hiển thị sweet alert cảnh báo
 function MessageWarning(text, timer) {
     Swal.fire({
-        title: 'Thông báo',
+        title: 'Notification',
         text: text,
         button: false,
         icon: 'warning',

@@ -3,6 +3,7 @@ using CateringManagement.Models.DTO;
 using CateringManagement.Models.Requests;
 using CateringManagement.Repository;
 using DAL.DomainClass;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -17,27 +18,39 @@ namespace CateringManagement.Controllers
         {
             _env = env;
         }
+        [Authorize(Roles = "admin")]
         public IActionResult Index()
         {
             return View();
         }
+        [Authorize(Roles = "admin")]
         [HttpGet]
         public async Task<IActionResult> GetListUsers(int? role, string? searching)
         {
             var lstUser = await _userRepo.getLstUsers(role, searching);
             return Json(lstUser, new System.Text.Json.JsonSerializerOptions());
         }
+        [Authorize(Roles = "admin")]
         [HttpGet]
         public async Task<IActionResult> GetUserByEmployeeId(string employeeId)
         {
             var user = await _userRepo.GetUserEmployeeId(employeeId);
             return Json(user, new System.Text.Json.JsonSerializerOptions());
         }
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> AddUser([FromForm] UserCreateRequest userRequest, IFormFile image)
         {
             if (ModelState.IsValid)
             {
+                var userSesion = HttpContext.Session.GetObjectFromJson<Users>("userLogin");
+
+                var checkUser = _userRepo.GetUserByEmail(userRequest.Email);
+                if (checkUser != null)
+                {
+                    return Json(new ResponseModel { Status = 2, Mess = "Email already exists" });
+                }
+
 
                 var maxid = Convert.ToInt32(await _userRepo.GetMaxEmployeeId()) + 1;
                 Users user = new Users();
@@ -52,6 +65,7 @@ namespace CateringManagement.Controllers
                 user.Status = userRequest.Status;
                 user.Role = userRequest.Role;
                 user.IsDeleted = 0;
+                user.CreatedBy = userSesion.Id;
                 var uploads = Path.Combine(_env.WebRootPath, "admin/assets/img");
 
                 if (!Directory.Exists(uploads))
@@ -81,6 +95,7 @@ namespace CateringManagement.Controllers
             }
             return Json(new ResponseModel { Status = 0, Mess = "Add Failure" });
         }
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> EditUser([FromForm] UserEditRequest userRequest, IFormFile image)
         {
@@ -89,6 +104,7 @@ namespace CateringManagement.Controllers
                 var user = await _userRepo.GetUserEmployeeId(userRequest.EmployeeId);
                 if (user != null)
                 {
+                    var userSesion = HttpContext.Session.GetObjectFromJson<Users>("userLogin");
                     user.FirstName = userRequest.FirstName;
                     user.LastName = userRequest.LastName;
                     user.Email = userRequest.Email;
@@ -98,7 +114,7 @@ namespace CateringManagement.Controllers
                     user.Sex = userRequest.Sex;
                     user.Status = userRequest.Status;
                     user.Role = userRequest.Role;
-
+                    user.CreatedBy = userSesion.Id;
                     if (image != null)
                     {
                         var uploads = Path.Combine(_env.WebRootPath, "admin/assets/img");
@@ -136,7 +152,7 @@ namespace CateringManagement.Controllers
             }
             return Json(new ResponseModel { Status = 0, Mess = "Update Failure" });
         }
-
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteUser(string userId)
         {
             var result = await _userRepo.DeleteUserByEmployeeId(userId);
