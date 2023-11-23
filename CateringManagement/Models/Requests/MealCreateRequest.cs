@@ -3,11 +3,12 @@
     public class MealCreateRequest
     {
         public string Name { get; set; }
+        public List<MealIgredientCreateRequest> Ingredients { get; set; }
     }
 
     public class MealIgredientCreateRequest
     {
-        public Guid IgredientId { get; set; }
+        public Guid IngredientId { get; set; }
         public int Quantity { get; set; }
     }
 }

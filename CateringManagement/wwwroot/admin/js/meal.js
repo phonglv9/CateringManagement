@@ -23,7 +23,9 @@ function loadDataMeals() {
             { "data": "Price" },
             {
                 "data": null, "render": function (data, type, row) {
-                    let html = `<button type="button" class="btn btn-warning m-1" title="Edit" onclick="showEditModal('${row.Id}')"><i class="fas fa-edit"></i></i></button>`;
+                    let html = ``;
+                    html += `<button type="button" class="btn btn-primary m-1" title="View detail" onclick="showDetailModal('${row.Id}')"><i class="fas fa-eye"></i></i></button>`;
+                    html += `<button type="button" class="btn btn-warning m-1" title="Edit" onclick="showEditModal('${row.Id}')"><i class="fas fa-edit"></i></i></button>`;
                     html += `<button type="button" class="btn btn-danger m-1" title="Delete" onclick="showDeleteModal('${row.Id}')"><i class="fas fa-trash"></i></i></button>`;
                     return html;
                 }
@@ -100,12 +102,11 @@ function addIngredientToTable() {
         $('#meals-table-no-row').remove();
     }
     $('#table-row-count').val(rowCount + 1);
-    console.log($('#table-row-count').val());
 
     // increase price
     $('#price').val(mealPrice + rowPrice);
 
-    let htmlRow = `<tr id="ingredient-row-${ingredientId}">`;
+    let htmlRow = `<tr id="ingredient-row-${ingredientId}" data-row-id="${ingredientId}" data-row-quantity="${quantity}">`;
     htmlRow += `<td>${ingredientName}</td>`;
     htmlRow += `<td>${quantity}</td>`;
     htmlRow += `<td>${ingredientUnit}</td>`;
@@ -135,7 +136,6 @@ function removeIngredientFromTable(id, removedPrice) {
 
     // increase price
     let mealPrice = parseFloat($('#price').val());
-    console.log(removedPrice);
     $('#price').val(mealPrice - removedPrice);
 
     // check no row
@@ -148,9 +148,19 @@ function removeIngredientFromTable(id, removedPrice) {
 }
 
 function addMeal() {
+    var ingredientArr = [];
+
+    $('#meals-table-body tr').each(function (index, value) {
+        ingredientArr.push({
+            IngredientId: $(this).attr('data-row-id'),
+            Quantity: parseInt($(this).attr('data-row-quantity'))
+        });
+    });
+    console.log(ingredientArr);
+
     var dataObj = {
         Name: $('#name').val(),
-        Ingredients: parseInt($('#unit').val())
+        Ingredients: ingredientArr
     };
 
     $.ajax({
@@ -166,6 +176,57 @@ function addMeal() {
                 toastr.success(result.mess, "Success");
                 $('#add-meal-modal').modal('hide');
                 loadDataTable();
+            } else {
+                toastr.error(result.mess, "Error");
+            }
+        },
+        error: function (errormessage) {
+            toastr.error(errormessage.responseText, "Error");
+        }
+    });
+}
+
+function showDetailModal(id) {
+    //$('#name').val('');
+    //$('#unit').val('');
+    //$('#price').val(0);
+    //$("#select-ingredient").val("0").change();
+    //$('#quantity').val('');
+    //$('#table-row-count').val(0);
+    //$('#meals-table-body').html(`<tr id="meals-table-no-row"><td colspan="6"align="center">No ingredient</td></tr>`);
+
+    $.ajax({
+        url: "/Meal/GetDetail/" + id,
+        type: "GET",
+        contentType: "application/json;charset=utf-8",
+        dataType: "json",
+        async: true,
+        processData: false,
+        success: function (result) {
+            if (result.status == 1) {
+                $('#name-detail').val(result.data.name);
+                $('#price-detail').val(result.data.price);
+
+                let htmlRow = ``;
+                let ingredients = result.data.ingredients;
+                $.each(ingredients, function (index, item) {
+                    htmlRow += `<tr>`;
+                    htmlRow += `<td>${item.name}</td>`;
+                    htmlRow += `<td>${item.quantity}</td>`;
+                    htmlRow += `<td>${item.unit}</td>`;
+                    htmlRow += `<td>${item.unitPrice}</td>`;
+                    htmlRow += `<td>${item.totalPrice}</td>`;
+                    htmlRow += `</tr>`;
+                });
+
+                $('#detail-meals-table-body').html(htmlRow);
+                //var htmlSelect = '<option value="0" selected>Select Ingredient</option>';
+                //$.each(result.data, function (key, item) {
+                //    htmlSelect += `<option value="${item.id}" id="ingredient-option-${item.id}" data-unit="${item.unit}" data-unit-price="${item.unitPrice}">${item.name}</option>`;
+                //});
+                //$('#select-ingredient').html(htmlSelect);
+
+                $('#detail-meal-modal').modal('show');
             } else {
                 toastr.error(result.mess, "Error");
             }
