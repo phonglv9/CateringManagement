@@ -9,18 +9,20 @@
 });
 var myChart;
 function GetFillterReprort() {
-    var dateStart = moment($('#date_start').val()).format('DD/MM/YYYY');
-    var dateEnd = moment($('#date_end').val()).format('DD/MM/YYYY');
-    $('#text-date').text(`Từ ${dateStart} đến ${dateEnd}:`);
+
     var dateStart = moment($('#date_start').val());
     var dateEnd = moment($('#date_end').val());
 
+    if (!dateStart.isValid() || !dateEnd.isValid() ) {
+        toastr.error('No value date !', "Error");
+        return;
+    }
     if (dateStart.isAfter(dateEnd)) {
-        MessageError('The start date must be less than the end date');
+        toastr.error('The start date must be less than the end date', "Error");
         return;
     }
     $('#text-date').text(`From ${dateStart.format('DD/MM/YYYY')} to ${dateEnd.format('DD/MM/YYYY')}:`);
-    $('#text-date').text(`From ${dateStart.format('DD/MM/YYYY')} to ${dateEnd.format('DD/MM/YYYY')}:`);
+ 
     $.ajax({
         url: '/Home/GetReportData',
         type: 'GET',

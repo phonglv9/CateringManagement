@@ -153,12 +153,12 @@ function validateForm() {
     }
 
     // Validation for email
-    // const email = $('#email').val();
-    // var emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/';
-    // if (!emailRegex.test(email)) {
-    //     $('#validationMessage').text('Please enter a valid email address.');
-    //     isValid = false;
-    // }
+     const email = $('#email').val();
+     var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+     if (!emailRegex.test(email)) {
+         $('#validationMessage').text('Please enter a valid email address.');
+         isValid = false;
+     }
 
     // // Validation for role selection
     // const role = $('#role').val();
