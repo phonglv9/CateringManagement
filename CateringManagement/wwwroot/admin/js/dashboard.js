@@ -20,6 +20,7 @@ function GetFillterReprort() {
         return;
     }
     $('#text-date').text(`From ${dateStart.format('DD/MM/YYYY')} to ${dateEnd.format('DD/MM/YYYY')}:`);
+    $('#text-date').text(`From ${dateStart.format('DD/MM/YYYY')} to ${dateEnd.format('DD/MM/YYYY')}:`);
     $.ajax({
         url: '/Home/GetReportData',
         type: 'GET',
@@ -64,23 +65,23 @@ function GetFillterReprort() {
                 myChart.destroy();
             }
             myChart = new Chart(ctx, {
-                type: 'bar',
+                type: 'line',
                 data: {
                     labels: labels,
                     datasets: [
                         {
                             label: 'Oder',
                             data: orders,
-                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                            borderColor: 'rgba(255, 99, 132, 1)',
+                            backgroundColor: '#E31837',
+                            borderColor: '#E31837',
                             borderWidth: 1
 
                         },
                         {
                             label: 'Revenue',
                               data: revenues,
-                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: '#0039a6',
+                            borderColor: '#0039a6',
                             borderWidth: 1
                         }
                     ]
