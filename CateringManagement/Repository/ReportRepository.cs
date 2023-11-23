@@ -24,7 +24,7 @@ namespace CateringManagement.Repository
                 .Sum(od => od.TotalPrice);
 
                 var totalOrders =  db.Orders
-                                    .Where(o => o.CreatedAt.Date == date.Date && o.Status == OrderStatus.Done && od.IsDeleted != 1)
+                                    .Where(o => o.CreatedAt.Date == date.Date && o.Status == OrderStatus.Done && o.IsDeleted != 1)
                                     .Count();
 
                 ReportDTO reportDto = new ReportDTO
