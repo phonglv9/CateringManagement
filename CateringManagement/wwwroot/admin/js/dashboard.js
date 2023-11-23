@@ -1,11 +1,23 @@
-﻿document.getElementById("date_start").addEventListener("change", function () {
-    var startDate = new Date(this.value);
-    var oneMonthAfterStart = new Date(startDate);
-    oneMonthAfterStart.setMonth(oneMonthAfterStart.getMonth() + 1);
-    var endDateInput = document.getElementById("date_end");
-    endDateInput.value = "";
-    endDateInput.setAttribute("min", this.value);
-    endDateInput.setAttribute("max", oneMonthAfterStart.toISOString().split('T')[0]);
+﻿$(document).ready(function () {
+    GetFillterReprort();
+    $("#btnExport").click(function () {
+        let table = document.getElementsByTagName("table");
+        TableToExcel.convert(table[0], {
+            name: `Report.xlsx`,
+            sheet: {
+                name: 'Report'
+            }
+        });
+    });
+    $('#date_start').change(function () {
+        var startDate = new Date(this.value);
+        var oneMonthAfterStart = new Date(startDate);
+        oneMonthAfterStart.setMonth(oneMonthAfterStart.getMonth() + 1);
+        var endDateInput = document.getElementById("date_end");
+        endDateInput.value = "";
+        endDateInput.setAttribute("min", this.value);
+        endDateInput.setAttribute("max", oneMonthAfterStart.toISOString().split('T')[0]);
+    })
 });
 var myChart;
 function GetFillterReprort() {
@@ -102,8 +114,6 @@ function GetFillterReprort() {
                     tooltips: {
                         callbacks: {
                             label: function (tooltipItem, data) {
-                                console.log(tooltipItem);
-                                console.log(data);
                                 var label = data.labels[tooltipItem.index];
                                 label = moment(label).format('DD/MM/YYYY');
                                 return label + ': ' + tooltipItem.yLabel;
@@ -116,9 +126,5 @@ function GetFillterReprort() {
         }
     });
 }
-$(document).ready(function () {
 
-    GetFillterReprort();
-
-});
 

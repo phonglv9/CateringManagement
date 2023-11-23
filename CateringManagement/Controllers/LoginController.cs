@@ -47,9 +47,7 @@ namespace CateringManagement.Controllers
                 {
                     return Json(new { result = 3 });// Không để rỗng
                 }
-                var Employees = _context.Users.ToList();
-                Users Emp = Employees.FirstOrDefault(c => c.Email.ToLower() == user.Email.ToLower() && c.Password == user.password && c.Status == 1);
-
+                var Emp = _context.Users.Where(c => c.Email.ToLower() == user.Email.ToLower() && c.Password == user.password && c.Status == 1).FirstOrDefault(); 
                 if (Emp == null)
                 {
                     return Json(new { result = 0 });// Không thành công

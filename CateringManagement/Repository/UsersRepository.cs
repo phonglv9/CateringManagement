@@ -37,8 +37,8 @@ namespace CateringManagement.Repository
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     Email = user.Email,
-                    CreateDate = null, //TextUtils.ConvertDateTimeToString(user.CreatedAt),
-                    UpdateDate = null, //TextUtils.ConvertDateTimeToString(user.UpdatedAt),
+                    CreateDate =  user.CreatedAt.ToString(),
+                    UpdateDate = user.UpdatedAt.ToString(),
                     DateOfBirth = TextUtils.ConvertDateToString(user.DateOfBirth),
                     Sex = user.Sex == 1 ? "Male" : "Female",
                     Status = user.Status == 1 ? "Active" : "InActive",
@@ -87,6 +87,19 @@ namespace CateringManagement.Repository
             try
             {
                 var user = await db.Users.Where(c => c.EmployeeId == employeeId).FirstOrDefaultAsync();
+                return user;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+        public Users GetUserByEmail(string email)
+        {
+            try
+            {
+                var user =  db.Users.Where(c => c.Email == email).FirstOrDefault();
                 return user;
             }
             catch (Exception ex)

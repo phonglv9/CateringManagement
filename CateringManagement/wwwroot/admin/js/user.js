@@ -64,7 +64,10 @@ function editUser() {
                 MessageSucces(response.mess);
                 loadDataUsers();
                 $('#addUser').modal('hide');
-            } else {
+            } else if (response.status == 2) {
+                MessageError(response.mess);
+            }else
+            {
                 MessageError(response.mess);
             }
         },
