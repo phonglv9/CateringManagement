@@ -10,7 +10,7 @@ namespace CateringManagement.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        ReportRepository _reportRepo;
+        ReportRepository _reportRepo = new ReportRepository();
 
         public HomeController(ILogger<HomeController> logger)
         {

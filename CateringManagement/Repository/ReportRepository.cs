@@ -20,11 +20,11 @@ namespace CateringManagement.Repository
             foreach (var date in dates)
             {
                 var revenue =   db.Orders
-                            .Where(od => od.CreatedAt.Date == date.Date && od.Status == OrderStatus.Done)
+                            .Where(od => od.CreatedAt.Date == date.Date && od.Status == OrderStatus.Done && od.IsDeleted != 1)
                 .Sum(od => od.TotalPrice);
 
                 var totalOrders =  db.Orders
-                                    .Where(o => o.CreatedAt.Date == date.Date && o.Status == OrderStatus.Done)
+                                    .Where(o => o.CreatedAt.Date == date.Date && o.Status == OrderStatus.Done && od.IsDeleted != 1)
                                     .Count();
 
                 ReportDTO reportDto = new ReportDTO
