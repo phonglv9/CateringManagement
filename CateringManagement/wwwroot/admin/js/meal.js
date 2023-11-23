@@ -8,6 +8,10 @@
     $('#save-btn').on('click', function () {
         addMeal();
     });
+
+    $('#update-btn').on('click', function () {
+        updateMeal();
+    });
 });
 
 function loadDataMeals() {
@@ -74,21 +78,21 @@ function showAddModal() {
     });
 }
 
-function changeIngredient() {
-    let selectedIngredient = $('#select-ingredient').find(":selected");
+function changeIngredient(mode = '') {
+    let selectedIngredient = $('#select-ingredient' + mode).find(":selected");
     if (selectedIngredient.val() == 0) {
-        $('#unit-group-label').html('---');
+        $('#unit-group-label' + mode).html('---');
     }
-    $('#unit-group-label').html(selectedIngredient.attr('data-unit'));
+    $('#unit-group-label' + mode).html(selectedIngredient.attr('data-unit'));
 }
 
-function addIngredientToTable() {
-    let selectedIngredient = $('#select-ingredient').find(":selected");
+function addIngredientToTable(mode = '') {
+    let selectedIngredient = $('#select-ingredient' + mode).find(":selected");
     let ingredientId = selectedIngredient.val();
     let ingredientName = selectedIngredient.text();
     let ingredientUnit = selectedIngredient.attr("data-unit");
     let ingredientUnitPrice = selectedIngredient.attr("data-unit-price");
-    let quantity = $('#quantity').val();
+    let quantity = $('#quantity' + mode).val();
     let rowPrice = parseFloat(ingredientUnitPrice * quantity);
     
     if (ingredientId == 0 || quantity == '' || quantity <= 0) {
@@ -96,55 +100,55 @@ function addIngredientToTable() {
     }
 
     // check no row
-    let mealPrice = parseFloat($('#price').val());
-    let rowCount = parseInt($('#table-row-count').val());
+    let mealPrice = parseFloat($('#price' + mode).val());
+    let rowCount = parseInt($('#table-row-count' + mode).val());
     if (rowCount == 0) {
-        $('#meals-table-no-row').remove();
+        $('#meals-table-no-row' + mode).remove();
     }
-    $('#table-row-count').val(rowCount + 1);
+    $('#table-row-count' + mode).val(rowCount + 1);
 
     // increase price
-    $('#price').val(mealPrice + rowPrice);
+    $('#price' + mode).val(mealPrice + rowPrice);
 
-    let htmlRow = `<tr id="ingredient-row-${ingredientId}" data-row-id="${ingredientId}" data-row-quantity="${quantity}">`;
+    let htmlRow = `<tr id="ingredient-row${mode}-${ingredientId}" data-row-id="${ingredientId}" data-row-quantity="${quantity}">`;
     htmlRow += `<td>${ingredientName}</td>`;
     htmlRow += `<td>${quantity}</td>`;
     htmlRow += `<td>${ingredientUnit}</td>`;
     htmlRow += `<td>${ingredientUnitPrice}</td>`;
     htmlRow += `<td>${rowPrice}</td>`;
-    htmlRow += `<td><button type="button" class="btn btn-danger" title="Delete" onclick="removeIngredientFromTable('${ingredientId}', ${rowPrice})"><i class="fas fa-trash"></i></i></button></td>`;
+    htmlRow += `<td><button type="button" class="btn btn-danger" title="Delete" onclick="removeIngredientFromTable('${ingredientId}', ${rowPrice}, '${mode}')"><i class="fas fa-trash"></i></i></button></td>`;
     htmlRow += `</tr>`;
 
     // add to table
-    $('#meals-table-body').append(htmlRow);
+    $('#meals-table-body' + mode).append(htmlRow);
 
     // disable selected option of select
-    $('#ingredient-option-' + ingredientId).attr('disabled', 'disabled');
+    $(`#ingredient-option${mode}-` + ingredientId).attr('disabled', 'disabled');
 
     // reset select
-    $("#select-ingredient").val("0").change();
-    $('#quantity').val('');
+    $("#select-ingredient" + mode).val("0").change();
+    $('#quantity' + mode).val('');
 }
 
-function removeIngredientFromTable(id, removedPrice) {
+function removeIngredientFromTable(id, removedPrice, mode = '') {
     // remove row
-    $('#ingredient-row-' + id).remove();
+    $(`#ingredient-row${mode}-` + id).remove();
 
     // minus counter
-    let rowCount = parseInt($('#table-row-count').val());
-    $('#table-row-count').val(--rowCount);
+    let rowCount = parseInt($('#table-row-count' + mode).val());
+    $('#table-row-count' + mode).val(--rowCount);
 
     // increase price
-    let mealPrice = parseFloat($('#price').val());
-    $('#price').val(mealPrice - removedPrice);
+    let mealPrice = parseFloat($('#price' + mode).val());
+    $('#price' + mode).val(mealPrice - removedPrice);
 
     // check no row
     if (rowCount == 0) {
-        $('#meals-table-body').html(`<tr id="meals-table-no-row"><td colspan="6"align="center">No ingredient</td></tr>`);
+        $('#meals-table-body' + mode).html(`<tr id="meals-table-no-row${mode}"><td colspan="6"align="center">No ingredient</td></tr>`);
     }
 
     // enable selected option of select
-    $('#ingredient-option-' + id).removeAttr('disabled');
+    $(`#ingredient-option${mode}-` + id).removeAttr('disabled');
 }
 
 function addMeal() {
@@ -220,12 +224,6 @@ function showDetailModal(id) {
                 });
 
                 $('#detail-meals-table-body').html(htmlRow);
-                //var htmlSelect = '<option value="0" selected>Select Ingredient</option>';
-                //$.each(result.data, function (key, item) {
-                //    htmlSelect += `<option value="${item.id}" id="ingredient-option-${item.id}" data-unit="${item.unit}" data-unit-price="${item.unitPrice}">${item.name}</option>`;
-                //});
-                //$('#select-ingredient').html(htmlSelect);
-
                 $('#detail-meal-modal').modal('show');
             } else {
                 toastr.error(result.mess, "Error");
@@ -237,9 +235,17 @@ function showDetailModal(id) {
     });
 }
 
-function showEditModal(id) {
+function getDetailForEditModal(id) {
+    //$('#name').val('');
+    //$('#unit').val('');
+    //$('#price').val(0);
+    //$("#select-ingredient-edit").val("0").change();
+    //$('#quantity-edit').val('');
+    //$('#table-row-count').val(0);
+    //$('#meals-table-body').html(`<tr id="meals-table-no-row"><td colspan="6"align="center">No ingredient</td></tr>`);
+
     $.ajax({
-        url: "/Meal/GetMealDetail/" + id,
+        url: "/Meal/GetDetail/" + id,
         type: "GET",
         contentType: "application/json;charset=utf-8",
         dataType: "json",
@@ -247,11 +253,27 @@ function showEditModal(id) {
         processData: false,
         success: function (result) {
             if (result.status == 1) {
-                $('#id-edit').val(id);
                 $('#name-edit').val(result.data.name);
-                $('#unit-edit').val(result.data.unit);
-                $('#unit-price-edit').val(result.data.unitPrice);
-                $('#edit-Meal-modal').modal('show');
+                $('#price-edit').val(result.data.price);
+
+                let htmlRow = ``;
+                let ingredients = result.data.ingredients;
+                $.each(ingredients, function (index, item) {
+                    htmlRow += `<tr id="ingredient-row-edit-${item.ingredientId}" data-row-id="${item.ingredientId}" data-row-quantity="${item.quantity}">`;
+                    htmlRow += `<td>${item.name}</td>`;
+                    htmlRow += `<td>${item.quantity}</td>`;
+                    htmlRow += `<td>${item.unit}</td>`;
+                    htmlRow += `<td>${item.unitPrice}</td>`;
+                    htmlRow += `<td>${item.totalPrice}</td>`;
+                    htmlRow += `<td><button type="button" class="btn btn-danger" title="Delete" onclick="removeIngredientFromTable('${item.ingredientId}', ${item.totalPrice}, '-edit')"><i class="fas fa-trash"></i></i></button></td>`;
+                    htmlRow += `</tr>`;
+
+                    // disable selected option of select
+                    $('#ingredient-option-edit-' + item.ingredientId).attr('disabled', 'disabled');
+                });
+
+                $('#table-row-count-edit').val(ingredients.length);
+                $('#meals-table-body-edit').html(htmlRow);
             } else {
                 toastr.error(result.mess, "Error");
             }
@@ -262,14 +284,62 @@ function showEditModal(id) {
     });
 }
 
-function updateMeal() {
+function showEditModal(id) {
+    //$('#name-edit').val('');
+    //$('#unit-edit').val('');
+    //$('#price-edit').val(0);
+    $("#select-ingredient-edit").val("0").change();
+    $('#quantity-edit').val('');
+    $('#id-edit').val(id);
+    //$('#table-row-count-edit').val(0);
+    //$('#meals-table-body-edit').html(`<tr id="meals-table-no-row-edit"><td colspan="6"align="center">No ingredient</td></tr>`);
+
+    getDetailForEditModal(id);
+
+    $.ajax({
+        url: "/Meal/GetSimpleListIngredients",
+        type: "GET",
+        contentType: "application/json;charset=utf-8",
+        dataType: "json",
+        async: true,
+        processData: false,
+        success: function (result) {
+            if (result.status == 1) {
+                var htmlSelect = '<option value="0" selected>Select Ingredient</option>';
+                $.each(result.data, function (key, item) {
+                    htmlSelect += `<option value="${item.id}" id="ingredient-option-edit-${item.id}" data-unit="${item.unit}" data-unit-price="${item.unitPrice}">${item.name}</option>`;
+                });
+                $('#select-ingredient-edit').html(htmlSelect);
+
+                $('#edit-meal-modal').modal('show');
+            } else {
+                toastr.error(result.mess, "Error");
+            }
+        },
+        error: function (errormessage) {
+            toastr.error(errormessage.responseText, "Error");
+        }
+    });
+}
+
+function updateMeal(id) {
+    var ingredientArr = [];
+
+    $('#meals-table-body-edit tr').each(function (index, value) {
+        ingredientArr.push({
+            IngredientId: $(this).attr('data-row-id'),
+            Quantity: parseInt($(this).attr('data-row-quantity'))
+        });
+    });
+    console.log(ingredientArr);
+
     var dataObj = {
-        Id: $('#id-edit').val(),
         Name: $('#name-edit').val(),
+        Ingredients: ingredientArr
     };
 
     $.ajax({
-        url: "/Meal/UpdateMeal",
+        url: "/Meal/UpdateMeal/" + $('#id-edit').val(),
         data: JSON.stringify(dataObj),
         type: "POST",
         contentType: "application/json;charset=utf-8",
@@ -279,7 +349,7 @@ function updateMeal() {
         success: function (result) {
             if (result.status == 1) {
                 toastr.success(result.mess, "Success");
-                $('#edit-Meal-modal').modal('hide');
+                $('#edit-meal-modal').modal('hide');
                 loadDataTable();
             } else {
                 toastr.error(result.mess, "Error");
@@ -292,28 +362,8 @@ function updateMeal() {
 }
 
 function showDeleteModal(id) {
-    $.ajax({
-        url: "/Meal/GetMealDetail/" + id,
-        type: "GET",
-        contentType: "application/json;charset=utf-8",
-        dataType: "json",
-        async: true,
-        processData: false,
-        success: function (result) {
-            if (result.status == 1) {
-                $('#id-delete').val(id);
-                $('#name-delete').html(result.data.name);
-                $('#unit-delete').html(result.data.unit);
-                $('#unit-price-delete').html(result.data.unitPrice);
-                $('#delete-Meal-modal').modal('show');
-            } else {
-                toastr.error(result.mess, "Error");
-            }
-        },
-        error: function (errormessage) {
-            toastr.error(errormessage.responseText, "Error");
-        }
-    });
+    $('#id-delete').val(id);
+    $('#delete-meal-modal').modal('show');
 }
 
 function deleteMeal() {
@@ -327,107 +377,7 @@ function deleteMeal() {
         success: function (result) {
             if (result.status == 1) {
                 toastr.success(result.mess, "Success");
-                $('#delete-Meal-modal').modal('hide');
-                loadDataTable();
-            } else {
-                toastr.error(result.mess, "Error");
-            }
-        },
-        error: function (errormessage) {
-            toastr.error(errormessage.responseText, "Error");
-        }
-    });
-}
-
-function showAddQuantityModal(id) {
-    $.ajax({
-        url: "/Meal/GetSimpleListMeals",
-        type: "GET",
-        contentType: "application/json;charset=utf-8",
-        dataType: "json",
-        async: true,
-        processData: false,
-        success: function (result) {
-            if (result.status == 1) {
-                var htmlSelect = '<option selected>Select Meal</option>';
-                $.each(result.data, function (key, item) {
-                    htmlSelect += `<option value="${item.id}">${item.name}</option>`;
-                });
-                $('#select-Meal').html(htmlSelect);
-                $('#quantity').val(0);
-                $('#add-quantity-modal').modal('show');
-            } else {
-                toastr.error(result.mess, "Error");
-            }
-        },
-        error: function (errormessage) {
-            toastr.error(errormessage.responseText, "Error");
-        }
-    });
-}
-
-$('#select-Meal').on('change', function () {
-    var id = this.value;
-    $('#selected-Meal-import').val(id);
-    calculateTotalPriceForImport(id, $('#quantity').val());
-});
-
-$('#quantity').on('change', function () {
-    console.log($('#selected-Meal-import').val());
-    calculateTotalPriceForImport($('#selected-Meal-import').val(), $('#quantity').val());
-});
-
-function changeQuantity() {
-    calculateTotalPriceForImport($('#selected-Meal-import').val(), $('#quantity').val());
-}
-
-function calculateTotalPriceForImport(id, quantity) {
-    if (id == '') {
-        return;
-    }
-
-    $.ajax({
-        url: "/Meal/GetTotalPriceForImport",
-        type: "GET",
-        contentType: "application/json;charset=utf-8",
-        dataType: "json",
-        data: { id: id, quantity: quantity },
-        success: function (result) {
-            if (result.status == 1) {
-                $('#total-price').val(result.data);
-            } else {
-                toastr.error(result.mess, "Error");
-            }
-        },
-        error: function (errormessage) {
-            toastr.error(errormessage.responseText, "Error");
-        }
-    });
-}
-
-function addQuantity() {
-    if ($('#selected-Meal-import').val() == '') {
-        return;
-    }
-
-    var dataObj = {
-        MealId: $('#selected-Meal-import').val(),
-        Quantity: parseInt($('#quantity').val()),
-        TotalPrice: parseInt($('#total-price').val()),
-    };
-
-    $.ajax({
-        url: "/Meal/ImportMealToStorage",
-        data: JSON.stringify(dataObj),
-        type: "POST",
-        contentType: "application/json;charset=utf-8",
-        dataType: "json",
-        async: true,
-        processData: false,
-        success: function (result) {
-            if (result.status == 1) {
-                toastr.success(result.mess, "Success");
-                $('#add-quantity-modal').modal('hide');
+                $('#delete-meal-modal').modal('hide');
                 loadDataTable();
             } else {
                 toastr.error(result.mess, "Error");

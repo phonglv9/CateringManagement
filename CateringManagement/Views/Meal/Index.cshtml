@@ -16,7 +16,7 @@
                 </div>
             </div>
             <div class="card-body">
-                <table class="table table-bordered" id="meals-table">
+                <table class="table table-bordered" id="meals-table" style="width: 100% !important">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -153,7 +153,7 @@
 </div>
 
 <div class="modal fade" id="edit-meal-modal" tabindex="-1" aria-labelledby="editMealLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="">Edit Meal</h5>
@@ -164,27 +164,63 @@
                     <input hidden id="id-edit" />
                     <div class="mb-3">
                         <label for="recipient-name" class="col-form-label">Name:</label>
-                        <input type="text" class="form-control" id="name-edit" value="">
+                        <input type="text" class="form-control" id="name-edit">
                     </div>
                     <div class="mb-3">
-                        <label for="message-text" class="col-form-label">Unit:</label>
-                        <input type="text" class="form-control" id="unit-edit" value="" disabled>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="message-text" class="col-form-label">Ingredient:</label>
+                                <select class="form-select" aria-label="Default select example" id="select-ingredient-edit" onchange="changeIngredient('-edit')">
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="quantity" class="col-form-label">Quantity:</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="quantity-edit" placeholder="Quantity" aria-describedby="basic-addon2">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="unit-group-label-edit">---</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="mb-3">
-                        <label for="message-text" class="col-form-label">Unit price:</label>
+                        <button type="button" class="btn btn-primary text-white" onclick="addIngredientToTable('-edit')">Add Ingredient To Meal</button>
+                    </div>
+                    <div class="mb-3">
+                        <input hidden id="table-row-count-edit" value="0" />
+                        <table class="table table-bordered" id="meals-table-edit">
+                            <thead>
+                                <tr>
+                                    <th>Ingredient Name</th>
+                                    <th>Quantity</th>
+                                    <th>Unit</th>
+                                    <th>Unit Price (USD)</th>
+                                    <th>Total Price (USD)</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="meals-table-body-edit">
+                                <tr id="meals-table-no-row-edit">
+                                    <td colspan="6" align="center">No ingredient</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Price:</label>
                         <div class="input-group">
-                            <input type="number" class="form-control" id="unit-price-edit" placeholder="Unit price" aria-describedby="basic-addon2" disabled>
+                            <input type="number" class="form-control" id="price-edit" placeholder="Total price" value="0" aria-describedby="basic-addon2" disabled>
                             <div class="input-group-append">
                                 <span class="input-group-text">USD</span>
                             </div>
                         </div>
                     </div>
-
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="update-btn" onclick="updateMeal()">Update</button>
+                <button type="button" class="btn btn-primary" id="update-btn">Update</button>
             </div>
         </div>
     </div>
@@ -200,20 +236,7 @@
             <div class="modal-body">
                 <form>
                     <input hidden id="id-delete" />
-                    <div class="mb-1">
-                        <label for="recipient-name" class="col-form-label">Name:</label>
-                        <span id="name-delete" value=""></span>
-                    </div>
-                    <div class="mb-1">
-                        <label for="message-text" class="col-form-label">Unit:</label>
-                        <span id="unit-delete" value=""></span>
-                    </div>
-                    <div class="mb-1">
-                        <label for="message-text" class="col-form-label">Unit price:</label>
-                        <span id="unit-price-delete" value=""></span> USD
-                    </div>
-                    <br />
-                    <div>Are you sure to delete this Meal?</div>
+                    <div>Are you sure to delete this meal?</div>
                 </form>
             </div>
             <div class="modal-footer">

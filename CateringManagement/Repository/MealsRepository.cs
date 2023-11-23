@@ -21,5 +21,23 @@ namespace CateringManagement.Repository
 
             return data;
         }
+
+        public async Task<int> InsertMealIngredientList(List<MealIngredients> mealIngredients)
+        {
+            db.MealIngredients.AddRange(mealIngredients);
+            return await db.SaveChangesAsync();
+        }
+
+        public async Task<int> DeleteMealIngredientList(List<MealIngredients> mealIngredients)
+        {
+            List<MealIngredients> dataUpdate = new();
+            foreach (var item in mealIngredients)
+            {
+                item.IsDeleted = 1;
+                dataUpdate.Add(item);
+            }
+            db.MealIngredients.UpdateRange(dataUpdate);
+            return await db.SaveChangesAsync();
+        }
     }
 }

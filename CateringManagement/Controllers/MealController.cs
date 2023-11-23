@@ -101,7 +101,7 @@ namespace CateringManagement.Controllers
         [HttpGet]
         public async Task<IActionResult> GetDetail(Guid id)
         {
-            var meal = await _context.Meals.Include(x => x.MealIngredients)
+            var meal = await _context.Meals.Include(x => x.MealIngredients.Where(y => y.IsDeleted == 0))
                 .ThenInclude(x => x.Ingredient)
                 .Where(x => x.Id == id && x.IsDeleted == 0)
                 .FirstOrDefaultAsync();
@@ -134,6 +134,86 @@ namespace CateringManagement.Controllers
                 Ingredients = ingredientData
             };
             return Json(new ResponseModel<MealDetailDTO> { Status = 1, Data = data });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateMeal([FromBody] MealUpdateRequest request, Guid id)
+        {
+            var meal = await _context.Meals.FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted == 0);
+            if (meal == null)
+            {
+                return Json(new ResponseModel { Status = 0, Mess = "Meal not found" });
+            }
+            var oldMealIngredients = await _context.MealIngredients.Where(x => x.MealId == id && x.IsDeleted == 0).ToListAsync();
+
+            // validate
+            if (string.IsNullOrEmpty(request.Name))
+            {
+                return Json(new ResponseModel { Status = 0, Mess = "Please enter the name" });
+            }
+
+            if (!request.Ingredients.Any())
+            {
+                return Json(new ResponseModel { Status = 0, Mess = "Please add the ingredient" });
+            }
+
+            var ingredientIds = request.Ingredients.Select(x => x.IngredientId).ToList();
+            var ingredients = await _context.Ingredients.Where(x => ingredientIds.Contains(x.Id) && x.IsDeleted == 0).ToListAsync();
+            if (ingredients.Count < ingredientIds.Count)
+            {
+                return Json(new ResponseModel { Status = 0, Mess = "Ingredient not found" });
+            }
+
+            List<MealIngredients> ingredientData = new();
+            decimal price = 0;
+            foreach (var item in request.Ingredients)
+            {
+                var ingredient = ingredients.First(x => x.Id == item.IngredientId);
+                ingredientData.Add(new MealIngredients
+                {
+                    IngredientId = ingredient.Id,
+                    Quantity = item.Quantity
+                });
+                price += item.Quantity * ingredient.PriceUnit;
+            }
+
+            meal.Name = request.Name;
+            meal.Price = price;
+            meal.MealIngredients = null;
+
+            try
+            {
+                await _mealsRepo.DeleteMealIngredientList(oldMealIngredients);
+                await _mealsRepo.InsertMealIngredientList(ingredientData);
+                await _mealsRepo.Update(meal);
+                return Json(new ResponseModel { Status = 1, Mess = "Update meal successfully" });
+            }
+            catch (Exception e)
+            {
+                return Json(new ResponseModel { Status = 0, Mess = "Update meal failed" });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteMeal(Guid id)
+        {
+            var meal = await _context.Meals.FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted == 0);
+            if (meal == null)
+            {
+                return Json(new ResponseModel { Status = 0, Mess = "Meal not found" });
+            }
+
+            meal.IsDeleted = 1;
+
+            try
+            {
+                await _mealsRepo.Update(meal);
+                return Json(new ResponseModel { Status = 1, Mess = "Delete meal successfully" });
+            }
+            catch (Exception e)
+            {
+                return Json(new ResponseModel { Status = 0, Mess = "Delete meal failed" });
+            }
         }
     }
 }
