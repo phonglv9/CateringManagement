@@ -4,6 +4,7 @@ namespace DAL.DomainClass
 {
     public class Orders : BaseEntity
     {
+        public string OrderCode { get; set; }
         public string CustomerName { get; set; }
         public string CustomerPhone { get; set; }
         public OrderStatus Status { get; set; }

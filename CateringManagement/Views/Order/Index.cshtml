@@ -1,0 +1,221 @@
+﻿@model List<DAL.DomainClass.Orders>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Users";
+
+}
+
+
+
+<main>
+    <div class="container-fluid px-4 pt-2">
+        <h1 class="mt-4">Order Management</h1>
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-success text-white p-2" data-bs-toggle="modal" data-bs-target="#addUser">Create Invoices</button>
+                    </div>
+                    <div class="col-md-10 ms-auto">
+                        <form id="Searchform" name="searchForm" method="post" class="form-horizontal" action="/Order/Index">
+                            <div class="input-group">
+                                <input type="text" id="sName" name="sName" class="form-control" value="@ViewData["sName"]" style="margin-right: 10px;" placeholder="Enter Name...">
+                                <label style="margin-right: 10px; padding-top: 5px;">From</label>
+                                <input type="date" id="fromDate" name="fromDate" class="form-control" value="@ViewData["fromDate"]">
+                                <label style="margin-left: 10px;margin-right: 10px;padding-top: 5px;">To</label>
+                                <input type="date" id="toDate" name="toDate" class="form-control" style="margin-right: 10px;" value="@ViewData["toDate"]">
+                                <select class="form-select" id="status" name="status" style="margin-right:20px;">
+                                    <option value="-1">All</option>
+                                    <option value="0">In-progess</option>
+                                    <option value="1">Done</option>
+                                </select>
+                                <span class="input-group-append">
+                                    <button class="btn btn-outline-light bg-primary border-bottom-0 border rounded-pill ms-n5" type="submit">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table table-responsive" id="tblUsers">
+                    <thead>
+                        <tr>
+                            <th>
+                                No
+                            </th>
+                            <th>
+                                Order ID
+                            </th>
+                            <th>
+                                Create Date
+                            </th>
+                            <th>
+                                Pickup Date
+                            </th>
+                            <th>
+                                Customer Name
+                            </th>
+                            <th>
+                                Phone Number
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                            <th>
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null)
+                        {
+                            int i = 1;
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@i</td>
+                                    <td>@item.OrderCode</td>
+                                    <td>@item.CreatedAt</td>
+                                    <td>@item.PickupTime</td>
+                                    <td>@item.CustomerName</td>
+                                    <td>@item.CustomerPhone</td>
+                                    <td>@(item.Status == 0 ? "In-progess" : "Done")</td>
+                                    <td>
+                                        <button class="btn btn-info" onclick="ViewDetailDataOrder('@item.Id')" />
+                                        <i class="fas fa-pen-square" aria-hidden="true"></i>
+                                        <button class="btn btn-danger delete" onclick="deleteObject('@item.Id')">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                i++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div class="modal fade" id="addUser" tabindex="-1" aria-labelledby="addUserLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addUserLabel">Add User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <div id="validationMessage" class="text-danger" role="alert">
+                </div>
+                <div class="mb-3">
+                    <label for="image" class="form-label">Image</label>
+                    <input type="file" class="form-control" onchange=" return showSelectedImage(this)" id="image">
+                </div>
+                <div id="selectedImageDiv" style="display:none;">
+                    <label class="form-label">Selected Image:</label>
+                    <div>
+                        <img id="selectedImage" style="max-width: 200px; max-height: 200px;" />
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="firstName" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="firstName">
+                    </div>
+                    <div class="col">
+                        <label for="lastName" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="lastName">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="roles">Role</label>
+                    <select class="form-select" id="role" name="role">
+                        <option value="0">Admin</option>
+                        <option value="1">Storage</option>
+                        <option value="2">Chef</option>
+                        <option value="3">Reception</option>
+                    </select>
+                </div>
+
+                <div class="mb-3 row">
+                    <div class="col">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password">
+                    </div>
+                    <div class="col">
+                        <label for="confirmPassword" class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control" id="confirmPassword">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="dateOfBirth" class="form-label">Date of Birth</label>
+                    <input type="date" class="form-control" id="dateOfBirth">
+                </div>
+                <div class="mb-3 row">
+                    <div class="col">
+                        <label class="form-label">Sex</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sex" id="male" value="1">
+                            <label class="form-check-label" for="male">
+                                Male
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sex" id="female" value="0">
+                            <label class="form-check-label" for="female">
+                                Female
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Status</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="status" id="active" value="1">
+                                <label class="form-check-label" for="active">
+                                    Active
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="status" id="inactive" value="0">
+                                <label class="form-check-label" for="inactive">
+                                    InActive
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="onAddUser" class="btn btn-primary">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        loadDataUsers();
+        $('#onAddUser').on('click', function () {
+            addUser();
+        });
+        $('#btnSearchUser').on('click', function () {
+
+            let valRole = $('#role-search').val();
+            let valSearch = $('#example-search-input').val();
+            loadDataUsers(valRole, valSearch)
+        });
+    });
+</script>
