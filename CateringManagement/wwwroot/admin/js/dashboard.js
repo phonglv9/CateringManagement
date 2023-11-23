@@ -1,4 +1,12 @@
-﻿
+﻿document.getElementById("date_start").addEventListener("change", function () {
+    var startDate = new Date(this.value);
+    var oneMonthAfterStart = new Date(startDate);
+    oneMonthAfterStart.setMonth(oneMonthAfterStart.getMonth() + 1);
+    var endDateInput = document.getElementById("date_end");
+    endDateInput.value = "";
+    endDateInput.setAttribute("min", this.value);
+    endDateInput.setAttribute("max", oneMonthAfterStart.toISOString().split('T')[0]);
+});
 var myChart;
 function GetFillterReprort() {
     var dateStart = moment($('#date_start').val()).format('DD/MM/YYYY');
@@ -11,7 +19,7 @@ function GetFillterReprort() {
         MessageError('The start date must be less than the end date');
         return;
     }
-    $('#text-date').text(`Từ ${dateStart.format('DD/MM/YYYY')} đến ${dateEnd.format('DD/MM/YYYY')}:`);
+    $('#text-date').text(`From ${dateStart.format('DD/MM/YYYY')} to ${dateEnd.format('DD/MM/YYYY')}:`);
     $.ajax({
         url: '/Home/GetReportData',
         type: 'GET',
@@ -25,12 +33,12 @@ function GetFillterReprort() {
 
             $.each(data, function (i, item) {
                 var dateValue = moment(item.dateValue).format('DD/MM/YYYY');
-                var totalMoney = item.totalMoney.toLocaleString('vi-VN');
-                var order = item.order.toLocaleString('vi-VN');
+                var totalMoney = item.totalMoney;
+                var order = item.order;
 
                 var row = $('<tr>');
                 row.append($('<td>').text(dateValue));
-                row.append($('<td>').text(totalMoney + ' đ'));
+                row.append($('<td>').text(totalMoney));
                 row.append($('<td>').text(order));
 
                 tbody.append(row);
@@ -42,14 +50,14 @@ function GetFillterReprort() {
             var totalMoney = 0;
             var totalOrder = 0;
             $.each(data, function (i, item) {
-                labels.push(moment(item.dateValue).format('DD/MM/YYYY ')); // format lại label
+                labels.push(moment(item.dateValue).format('DD/MM/YYYY '));
                 orders.push(item.order);
                 revenues.push(item.totalMoney);
 
                 totalMoney += item.totalMoney;
                 totalOrder += item.order;
             });
-            $('#total_money').text(totalMoney.toLocaleString('vi-VN') + ' đ');
+            $('#total_money').text(totalMoney);
             $('#total_order').text(totalOrder);
             var ctx = document.getElementById('myChart').getContext('2d');
             if (myChart) {
@@ -84,7 +92,7 @@ function GetFillterReprort() {
                             ticks: {
                                 beginAtZero: true,
                                 callback: function (value, index, values) {
-                                    return value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+                                    return value;
                                 }
                             }
                         }]
@@ -96,12 +104,7 @@ function GetFillterReprort() {
                                 console.log(data);
                                 var label = data.labels[tooltipItem.index];
                                 label = moment(label).format('DD/MM/YYYY');
-                                //if (reportType === 'revenue') {
-                                //    return label + ': ' + tooltipItem.yLabel.toLocaleString('vi-VN', {style: 'currency', currency: 'VND' });
-                                //} else {
-                                //    return label + ': Đơn ' + tooltipItem.yLabel;
-                                //}
-                                return label + ': ' + tooltipItem.yLabel.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+                                return label + ': ' + tooltipItem.yLabel;
                             }
                         }
                     }
