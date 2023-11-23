@@ -105,6 +105,53 @@
     </div>
 </div>
 
+<div class="modal fade" id="detail-meal-modal" tabindex="-1" aria-labelledby="detailMealLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="">Meal Detail</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Name:</label>
+                        <input type="text" class="form-control" id="name-detail" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <table class="table table-bordered" id="meals-table">
+                            <thead>
+                                <tr>
+                                    <th>Ingredient Name</th>
+                                    <th>Quantity</th>
+                                    <th>Unit</th>
+                                    <th>Unit Price (USD)</th>
+                                    <th>Total Price (USD)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detail-meals-table-body">
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Price:</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="price-detail" placeholder="Total price" value="0" aria-describedby="basic-addon2" disabled>
+                            <div class="input-group-append">
+                                <span class="input-group-text">USD</span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="edit-meal-modal" tabindex="-1" aria-labelledby="editMealLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
