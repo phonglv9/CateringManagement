@@ -3,7 +3,7 @@
     <div class="container-fluid px-4 pt-2">
         <h4 class="mt-4">Dashboard</h4>
         <div class="bg-light d-flex align-items-center justify-content-between col-md-2">
-            <p>Từ 1/5/2023 đến 7/5/2023</p>
+            <p id="title-date"></p>
         </div>
         <div class="row mb-3">
 
@@ -25,7 +25,7 @@
             <div class="col-sm-6 col-xl-3">
                 <div class="bg-light d-flex align-items-center justify-content-between p-4">
                     <i class="fas fa-dollar-sign fa-2x text-primary"></i>
-                    <h5 class="mb-0 fw-bold text-dark text-uppercase">Doanh thu:</h5>
+                    <h5 class="mb-0 fw-bold text-dark text-uppercase">Revenue:</h5>
                     <h5 class="mb-0" id="total_money"></h5>
                 </div>
             </div>
@@ -33,7 +33,7 @@
                 <div class="bg-light d-flex align-items-center justify-content-between p-4 px-2">
 
                     <i class="fas fa-shopping-cart text-primary fa-2x"></i>
-                    <h5 class="mb-0 fw-bold text-dark text-uppercase">Tổng đơn hàng:</h5>
+                    <h5 class="mb-0 fw-bold text-dark text-uppercase">Total order:</h5>
                     <h5 class="mb-0" id="total_order"></h5>
 
                 </div>
@@ -42,7 +42,7 @@
             <div class="bg-light d-flex align-items-center justify-content-between p-4 px-2">
 
             <i class="fas fa-book text-primary fa-2x"></i>
-            <h5 class="mb-0 fw-bold text-dark text-uppercase">Sản phẩm bán ra:</h5>
+                    <h5 class="mb-0 fw-bold text-dark text-uppercase">Products sold:</h5>
             <h5 class="mb-0" id="total_product"></h5>
 
             </div>
@@ -57,7 +57,7 @@
             <div>
 
                 <a class="d-none d-sm-inline-block btn btn-sm btn-primary mb-2" href="#" id="btnExport">
-                    <i class="fas fa-download fa-sm text-white-50"></i>  Xuất Excel
+                    <i class="fas fa-download fa-sm text-white-50"></i>  Export Excel
                 </a>
 
 
@@ -74,10 +74,10 @@
                                     Date Value
                                 </th>
                                 <th>
-                                    Tổng doanh thu
+                                    Total Revenue
                                 </th>
                                 <th>
-                                    Tổng đơn hàng
+                                    Total order
                                 </th>
 
 
@@ -92,7 +92,7 @@
                 <!-- Bar Chart -->
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-dark">Doanh thu</h6>
+                        <h6 class="m-0 font-weight-bold text-dark">Revenue</h6>
                     </div>
                     <div class="card-body">
                         <div class="chart-bar">
@@ -126,7 +126,7 @@
         var dateEnd = moment($('#date_end').val());
 
         if (dateStart.isAfter(dateEnd)) {
-            MessageError('Ngày bắt đầu phải nhỏ hơn ngày kết thúc');
+            MessageError('The start date must be less than the end date');
             return;
         }
         $('#text-date').text(`Từ ${dateStart.format('DD/MM/YYYY')} đến ${dateEnd.format('DD/MM/YYYY')}:`);
@@ -179,7 +179,7 @@
                         labels: labels,
                         datasets: [
                             {
-                                label: 'Đơn Đặt',
+                                label: 'Oder',
                                 data: orders,
 
                                 backgroundColor: 'rgba(255, 99, 132, 0.5)',
@@ -188,7 +188,7 @@
 
                             },
                             {
-                                label: 'Doanh thu',
+                                label: 'Revenue,
                                 data: revenues,
                                 backgroundColor: 'rgba(54, 162, 235, 0.5)',
                                 borderColor: 'rgba(54, 162, 235, 1)',
