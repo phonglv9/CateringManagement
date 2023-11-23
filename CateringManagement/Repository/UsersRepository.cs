@@ -96,6 +96,19 @@ namespace CateringManagement.Repository
             }
         }
 
+        public async Task<Users> GetUserEmail(string email)
+        {
+            try
+            {
+                var user = await db.Users.Where(c => c.Email == email).FirstOrDefaultAsync();
+                return user;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
 
 
     }
