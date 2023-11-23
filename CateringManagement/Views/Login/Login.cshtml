@@ -84,7 +84,6 @@
         });
     });
     function Login() {
-
         var email = $("#Email").val();
         var password = $("#Password").val();
         console.log(email)
@@ -98,9 +97,7 @@
             success: function (response) {
                 console.log(response);
                 if (response.result == 1) {
-                  
-                        window.location.href = "/Home/Index";
-                 
+                    window.location.href = "/Home/Index";
                 } else if (response.result == 0) {
                     toastr.error("Incorrect account or password!", "Notification!");
                     //swal("Notification!", "Incorrect account or password!", "error");
