@@ -18,26 +18,26 @@ namespace CateringManagement.Controllers
         {
             _env = env;
         }
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         public IActionResult Index()
         {
             return View();
         }
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         [HttpGet]
         public async Task<IActionResult> GetListUsers(int? role, string? searching)
         {
             var lstUser = await _userRepo.getLstUsers(role, searching);
             return Json(lstUser, new System.Text.Json.JsonSerializerOptions());
         }
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         [HttpGet]
         public async Task<IActionResult> GetUserByEmployeeId(string employeeId)
         {
             var user = await _userRepo.GetUserEmployeeId(employeeId);
             return Json(user, new System.Text.Json.JsonSerializerOptions());
         }
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> AddUser([FromForm] UserCreateRequest userRequest, IFormFile image)
         {
@@ -95,7 +95,7 @@ namespace CateringManagement.Controllers
             }
             return Json(new ResponseModel { Status = 0, Mess = "Add Failure" });
         }
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> EditUser([FromForm] UserEditRequest userRequest, IFormFile image)
         {
@@ -152,7 +152,7 @@ namespace CateringManagement.Controllers
             }
             return Json(new ResponseModel { Status = 0, Mess = "Update Failure" });
         }
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteUser(string userId)
         {
             var result = await _userRepo.DeleteUserByEmployeeId(userId);

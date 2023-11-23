@@ -1,4 +1,6 @@
-﻿using DAL.Context;
+﻿using CateringManagement.Models.DTO;
+using CateringManagement.Repository;
+using DAL.Context;
 using DAL.DomainClass;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,12 +11,15 @@ namespace CateringManagement.Controllers
     {
         private readonly ApplicationDbContext _context;
 
+        OrdersRepository _ordersRepo = new OrdersRepository();
+        MealsRepository _mealsRepo = new MealsRepository();
+
         public OrderController()
         {
             _context = new ApplicationDbContext();
         }
 
-        public IActionResult Index(string? fromDate,string? toDate,string? sName,string? status)
+        public IActionResult Index1(string? fromDate,string? toDate,string? sName,string? status)
         {
             var lstOrders = _context.Orders.ToList();
             if (sName != null)
@@ -57,5 +62,23 @@ namespace CateringManagement.Controllers
             return Json(new { result = 1 });
         }
 
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetListOrders()
+        {
+            var data = await _ordersRepo.GetAllData();
+            return Json(data, new System.Text.Json.JsonSerializerOptions());
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetSimpleListMeals()
+        {
+            var data = await _mealsRepo.GetAllData();
+            return Json(new ResponseModel<List<MealDTO>> { Status = 1, Data = data });
+        }
     }
 }

@@ -1,106 +1,34 @@
-﻿@model List<DAL.DomainClass.Orders>
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-
-@{
-    ViewData["Title"] = "Users";
-
+﻿@{
+    ViewData["Title"] = "Order";
 }
-
-
 
 <main>
     <div class="container-fluid px-4 pt-2">
-        <h1 class="mt-4">Order Management</h1>
+        <h1 class="mt-4">Orders Management</h1>
         <div class="card mb-4">
             <div class="card-header">
                 <div class="row">
-                    <div class="col-md-2">
-                        <button type="button" class="btn btn-success text-white p-2" data-bs-toggle="modal" data-bs-target="#addUser">Create Invoices</button>
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-success text-white p-2" id="add-btn">Add Order</button>
                     </div>
-                    <div class="col-md-10 ms-auto">
-                        <form id="Searchform" name="searchForm" method="post" class="form-horizontal" action="/Order/Index">
-                            <div class="input-group">
-                                <input type="text" id="sName" name="sName" class="form-control" value="@ViewData["sName"]" style="margin-right: 10px;" placeholder="Enter Order Id...">
-                                <label style="margin-right: 10px; padding-top: 5px;">From</label>
-                                <input type="date" id="fromDate" name="fromDate" class="form-control" value="@ViewData["fromDate"]">
-                                <label style="margin-left: 10px;margin-right: 10px;padding-top: 5px;">To</label>
-                                <input type="date" id="toDate" name="toDate" class="form-control" style="margin-right: 10px;" value="@ViewData["toDate"]">
-                                <select class="form-select" id="status" name="status" style="margin-right:20px;">
-                                    <option value="-1">All</option>
-                                    <option value="0">In-progess</option>
-                                    <option value="1">Done</option>
-                                </select>
-                                <span class="input-group-append">
-                                    <button class="btn btn-outline-light bg-primary border-bottom-0 border rounded-pill ms-n5" type="submit">
-                                        <i class="fa fa-search"></i>
-                                    </button>
-                                </span>
-                            </div>
-                        </form>
+                    <div class="col-md-4 ms-auto">
                     </div>
                 </div>
             </div>
             <div class="card-body">
-                <table class="table table-responsive" id="tblUsers">
+                <table class="table table-bordered" id="orders-table" style="width: 100% !important">
                     <thead>
                         <tr>
-                            <th>
-                                No
-                            </th>
-                            <th>
-                                Order ID
-                            </th>
-                            <th>
-                                Create Date
-                            </th>
-                            <th>
-                                Pickup Date
-                            </th>
-                            <th>
-                                Customer Name
-                            </th>
-                            <th>
-                                Phone Number
-                            </th>
-                            <th>
-                                Status
-                            </th>
-                            <th>
-                                Action
-                            </th>
+                            <th>Order ID</th>
+                            <th>Created Date</th>
+                            <th>Pickup Date</th>
+                            <th>Customer Name</th>
+                            <th>Phone Number</th>
+                            <th>Status</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @if (Model != null)
-                        {
-                            int i = 1;
-                            @foreach (var item in Model.Where(c => c.IsDeleted == 0))
-                            {
-                                <tr>
-                                    <td>@i</td>
-                                    <td>@item.OrderCode</td>
-                                    <td>@item.CreatedAt</td>
-                                    <td>@item.PickupTime</td>
-                                    <td>@item.CustomerName</td>
-                                    <td>@item.CustomerPhone</td>
-                                    <td>@(item.Status == 0 ? "In-progess" : "Done")</td>
-                                    <td>
-                                        <button class="btn btn-info" onclick="ViewDetailDataOrder('@item.Id')" />
-                                        <i class="fas fa-pen-square" aria-hidden="true"></i>
-                                        @if (item.Status != 0)
-                                        {
-                                            <form id="formDeleted">
-                                                <input type="hidden" id="idOrder" value="@item.Id" />
-                                                <button class="btn btn-danger delete">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
-                                            </form>
-                                        }
-                                    </td>
-                                </tr>
-                                i++;
-                            }
-                        }
                     </tbody>
                 </table>
             </div>
@@ -108,152 +36,288 @@
     </div>
 </main>
 
-<div class="modal fade" id="addUser" tabindex="-1" aria-labelledby="addUserLabel" aria-hidden="true">
+<div class="modal fade" id="add-order-modal" tabindex="-1" aria-labelledby="addOrderLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addUserLabel">Add User</h5>
+                <h5 class="modal-title" id="">Add Order</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-
-                <div id="validationMessage" class="text-danger" role="alert">
-                </div>
-                <div class="mb-3">
-                    <label for="image" class="form-label">Image</label>
-                    <input type="file" class="form-control" onchange=" return showSelectedImage(this)" id="image">
-                </div>
-                <div id="selectedImageDiv" style="display:none;">
-                    <label class="form-label">Selected Image:</label>
-                    <div>
-                        <img id="selectedImage" style="max-width: 200px; max-height: 200px;" />
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col">
-                        <label for="firstName" class="form-label">First Name</label>
-                        <input type="text" class="form-control" id="firstName">
-                    </div>
-                    <div class="col">
-                        <label for="lastName" class="form-label">Last Name</label>
-                        <input type="text" class="form-control" id="lastName">
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label" for="roles">Role</label>
-                    <select class="form-select" id="role" name="role">
-                        <option value="0">Admin</option>
-                        <option value="1">Storage</option>
-                        <option value="2">Chef</option>
-                        <option value="3">Reception</option>
-                    </select>
-                </div>
-
-                <div class="mb-3 row">
-                    <div class="col">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password">
-                    </div>
-                    <div class="col">
-                        <label for="confirmPassword" class="form-label">Confirm Password</label>
-                        <input type="password" class="form-control" id="confirmPassword">
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label for="dateOfBirth" class="form-label">Date of Birth</label>
-                    <input type="date" class="form-control" id="dateOfBirth">
-                </div>
-                <div class="mb-3 row">
-                    <div class="col">
-                        <label class="form-label">Sex</label>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="sex" id="male" value="1">
-                            <label class="form-check-label" for="male">
-                                Male
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="sex" id="female" value="0">
-                            <label class="form-check-label" for="female">
-                                Female
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="mb-3">
-                            <label for="status" class="form-label">Status</label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="status" id="active" value="1">
-                                <label class="form-check-label" for="active">
-                                    Active
-                                </label>
+                <form>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="" class="col-form-label">Customer Name:</label>
+                                <input type="text" class="form-control" id="customer-name">
                             </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="status" id="inactive" value="0">
-                                <label class="form-check-label" for="inactive">
-                                    InActive
-                                </label>
+                            <div class="col-md-6">
+                                <label for="" class="col-form-label">Phone Number:</label>
+                                <input type="text" class="form-control" id="customer-phone">
                             </div>
                         </div>
                     </div>
-                </div>
-
-
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="" class="col-form-label">Pickup Date:</label>
+                                <input type="text" class="form-control" id="pickup-date">
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-12"><h5>Order Detail</h5></div>
+                            <div class="col-md-6">
+                                <label for="" class="col-form-label">Meal:</label>
+                                <select class="form-select" aria-label="Default select example" id="select-meal" onchange="changeMeal()">
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="" class="col-form-label">Price:</label>
+                                <input type="text" class="form-control" id="meal-price" disabled>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="" class="col-form-label">Quantity:</label>
+                                <input type="number" class="form-control" id="quantity">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-primary text-white" id="add-ingredient-btn" onclick="addMealToTable()">Add Meal To Order</button>
+                    </div>
+                    <div class="mb-3">
+                        <input hidden id="table-row-count" value="0" />
+                        <table class="table table-bordered" id="Orders-table">
+                            <thead>
+                                <tr>
+                                    <th>Meal</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total Price (USD)</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-table-body">
+                                <tr id="orders-table-no-row">
+                                    <td colspan="5"align="center">No meal</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="message-text" class="col-form-label">Total Price:</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="order-price" placeholder="Total price" value="0" aria-describedby="basic-addon2" disabled>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">USD</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="message-text" class="col-form-label">Sell Price:</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="sell-price" placeholder="Sell price" value="0" aria-describedby="basic-addon2" disabled>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">USD</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                        
+                    </div>
+                </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" id="onAddUser" class="btn btn-primary">Add</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="save-btn">Save</button>
             </div>
         </div>
     </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        loadDataUsers();
-        $('#onAddUser').on('click', function () {
-            addUser();
-        });
-        $('#btnSearchUser').on('click', function () {
 
-            let valRole = $('#role-search').val();
-            let valSearch = $('#example-search-input').val();
-            loadDataUsers(valRole, valSearch)
-        });
-    });
+<div class="modal fade" id="detail-order-modal" tabindex="-1" aria-labelledby="detailOrderLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="">Order Detail</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Name:</label>
+                        <input type="text" class="form-control" id="name-detail" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <table class="table table-bordered" id="Orders-table">
+                            <thead>
+                                <tr>
+                                    <th>Ingredient Name</th>
+                                    <th>Quantity</th>
+                                    <th>Unit</th>
+                                    <th>Unit Price (USD)</th>
+                                    <th>Total Price (USD)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detail-Orders-table-body">
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Price:</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="price-detail" placeholder="Total price" value="0" aria-describedby="basic-addon2" disabled>
+                            <div class="input-group-append">
+                                <span class="input-group-text">USD</span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-    $(document).ready(function () {
-        $("#formDeleted").submit(function (e) {
-            e.preventDefault(); // Ngăn chặn sự kiện mặc định của form
-            IsDeleted();
-        });
-    });
-    function IsDeleted() {
-        var Id = $("#idOrder").val();
-        $.ajax({
-            type: "POST",
-            url: `/Order/Deleted?Id=${Id}`,
-            data: JSON.stringify({ id: Id }),
-            contentType: "application/json;",
-            dataType: "json",
-            success: function (response) {
-                console.log(response);
-                if (response.result == 1) {
-                    toastr.success("Delete successfully", "Success!");
-                    setTimeout(function () {
-                        window.location.href = "/Order/Index";
-                    }, 1000);
-                } else {
-                    toastr.error("Please contact the administrator for processing!", "Notification!");
-                }
-            },
-            error: function (error) {
-                console.log(error);
-            }
-        });
-    }
+<div class="modal fade" id="edit-order-modal" tabindex="-1" aria-labelledby="editOrderLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="">Edit Order</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input hidden id="id-edit" />
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Name:</label>
+                        <input type="text" class="form-control" id="name-edit">
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="message-text" class="col-form-label">Ingredient:</label>
+                                <select class="form-select" aria-label="Default select example" id="select-ingredient-edit" onchange="changeIngredient('-edit')">
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="quantity" class="col-form-label">Quantity:</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="quantity-edit" placeholder="Quantity" aria-describedby="basic-addon2">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="unit-group-label-edit">---</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-primary text-white" onclick="addIngredientToTable('-edit')">Add Ingredient To Order</button>
+                    </div>
+                    <div class="mb-3">
+                        <input hidden id="table-row-count-edit" value="0" />
+                        <table class="table table-bordered" id="Orders-table-edit">
+                            <thead>
+                                <tr>
+                                    <th>Ingredient Name</th>
+                                    <th>Quantity</th>
+                                    <th>Unit</th>
+                                    <th>Unit Price (USD)</th>
+                                    <th>Total Price (USD)</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="Orders-table-body-edit">
+                                <tr id="Orders-table-no-row-edit">
+                                    <td colspan="6" align="center">No ingredient</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Price:</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="price-edit" placeholder="Total price" value="0" aria-describedby="basic-addon2" disabled>
+                            <div class="input-group-append">
+                                <span class="input-group-text">USD</span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="update-btn">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-</script>
+<div class="modal fade" id="delete-order-modal" tabindex="-1" aria-labelledby="deleteOrderLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="">Delete Order</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input hidden id="id-delete" />
+                    <div>Are you sure to delete this Order?</div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="delete-btn" onclick="deleteOrder()">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="add-quantity-modal" tabindex="-1" aria-labelledby="addQuantityLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="">Add Orders To Storage</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input hidden id="selected-Order-import" />
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Order:</label>
+                        <select class="form-select" aria-label="Select Order" id="select-Order">
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Quantity:</label>
+                        <input type="number" class="form-control" id="quantity" value="0">
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Total price:</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="total-price" placeholder="Total price" aria-describedby="basic-addon2" disabled>
+                            <div class="input-group-append">
+                                <span class="input-group-text">USD</span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="import-Order-btn">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/admin/js/order.js" asp-append-version="true"></script>
+}
