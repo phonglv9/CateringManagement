@@ -106,12 +106,13 @@ function addMealToTable(mode = '') {
     let mealId = selectedMeal.val();
     let mealName = selectedMeal.text();
     let mealPrice = parseFloat(selectedMeal.attr("data-price"));
-    let quantity = parseInt($('#quantity' + mode).val());
-    let totalMealPrice = parseFloat(mealPrice * quantity).toFixed(2);
 
-    if (mealId == 0 || quantity == '' || quantity <= 0) {
+    if (mealId == 0 || $('#quantity' + mode).val() == '' || $('#quantity' + mode).val() <= 0) {
         return;
     }
+
+    let quantity = parseInt($('#quantity' + mode).val());
+    let totalMealPrice = parseFloat(mealPrice * quantity).toFixed(2);
 
     // check no row
     let orderPrice = parseFloat($('#order-price' + mode).val());

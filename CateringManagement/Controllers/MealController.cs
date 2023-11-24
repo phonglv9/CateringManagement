@@ -72,6 +72,12 @@ namespace CateringManagement.Controllers
                 return Json(new ResponseModel { Status = 0, Mess = "Ingredient not found" });
             }
 
+            var quantityCount = request.Ingredients.Count(x => x.Quantity > 0);
+            if (quantityCount < ingredients.Count)
+            {
+                return Json(new ResponseModel { Status = 0, Mess = "Invalid quantity" });
+            }
+
             List<MealIngredients> ingredientData = new();
             decimal price = 0;
             foreach (var item in request.Ingredients)
@@ -171,6 +177,12 @@ namespace CateringManagement.Controllers
             if (ingredients.Count < ingredientIds.Count)
             {
                 return Json(new ResponseModel { Status = 0, Mess = "Ingredient not found" });
+            }
+
+            var quantityCount = request.Ingredients.Count(x => x.Quantity > 0);
+            if (quantityCount < ingredients.Count)
+            {
+                return Json(new ResponseModel { Status = 0, Mess = "Invalid quantity" });
             }
 
             List<MealIngredients> ingredientData = new();

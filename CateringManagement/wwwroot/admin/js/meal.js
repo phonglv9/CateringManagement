@@ -94,12 +94,13 @@ function addIngredientToTable(mode = '') {
     let ingredientName = selectedIngredient.text();
     let ingredientUnit = selectedIngredient.attr("data-unit");
     let ingredientUnitPrice = parseFloat(selectedIngredient.attr("data-unit-price"));
-    let quantity = parseInt($('#quantity' + mode).val());
-    let rowPrice = parseFloat(ingredientUnitPrice * quantity).toFixed(2);
-    
-    if (ingredientId == 0 || quantity == '' || quantity <= 0) {
+
+    if (ingredientId == 0 || $('#quantity' + mode).val() == '' || $('#quantity' + mode).val() <= 0) {
         return;
     }
+
+    let quantity = parseInt($('#quantity' + mode).val());
+    let rowPrice = parseFloat(ingredientUnitPrice * quantity).toFixed(2);
 
     // check no row
     let mealPrice = parseFloat($('#price' + mode).val());

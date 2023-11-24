@@ -3,10 +3,12 @@ using CateringManagement.Models.DTO;
 using CateringManagement.Models.Requests;
 using CateringManagement.Repository;
 using DAL.DomainClass;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CateringManagement.Controllers
 {
+    [Authorize(Roles = "admin,chef,storage")]
     public class IngredientController : Controller
     {
         IngredientsRepository _ingredientsRepo = new IngredientsRepository();
@@ -28,16 +30,25 @@ namespace CateringManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> AddIngredient([FromBody] IngredientCreateRequest request)
         {
-            if (!ModelState.IsValid)
+            var userSesion = HttpContext.Session.GetObjectFromJson<Users>("userLogin");
+
+            // validate
+            if (string.IsNullOrEmpty(request.Name))
             {
-                return Json(new ResponseModel { Status = 0, Mess = "Invalid request" });
+                return Json(new ResponseModel { Status = 0, Mess = "Please enter the name" });
+            }
+            if (request.PriceUnit <= 0)
+            {
+                return Json(new ResponseModel { Status = 0, Mess = "Invalid unit price" });
             }
 
             var ingredient = new Ingredients
             {
                 Name = request.Name,
                 Unit = request.Unit,
-                PriceUnit = request.PriceUnit
+                PriceUnit = request.PriceUnit,
+                CreatedBy = userSesion.Id,
+                UpdatedBy = userSesion.Id
             };
 
             try
@@ -73,18 +84,22 @@ namespace CateringManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateIngredient([FromBody] IngredientUpdateRequest request)
         {
+            var userSesion = HttpContext.Session.GetObjectFromJson<Users>("userLogin");
+
             var ingredient = await _ingredientsRepo.GetByID(request.Id);
             if (ingredient == null)
             {
                 return Json(new ResponseModel<IngredientDetailDTO> { Status = 0, Mess = "Ingredient not found" });
             }
 
-            if (!ModelState.IsValid)
+            // validate
+            if (string.IsNullOrEmpty(request.Name))
             {
-                return Json(new ResponseModel { Status = 0, Mess = "Invalid request" });
+                return Json(new ResponseModel { Status = 0, Mess = "Please enter the name" });
             }
 
             ingredient.Name = request.Name;
+            ingredient.UpdatedBy = userSesion.Id;
 
             try
             {
@@ -100,18 +115,21 @@ namespace CateringManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteIngredient(Guid id)
         {
+            var userSesion = HttpContext.Session.GetObjectFromJson<Users>("userLogin");
+
             var ingredient = await _ingredientsRepo.GetByID(id);
             if (ingredient == null)
             {
                 return Json(new ResponseModel<IngredientDetailDTO> { Status = 0, Mess = "Ingredient not found" });
             }
 
-            if (ingredient.Quantity > 0)
-            {
-                return Json(new ResponseModel<IngredientDetailDTO> { Status = 0, Mess = "You can not delete this ingredient" });
-            }
+            //if (ingredient.Quantity > 0)
+            //{
+            //    return Json(new ResponseModel<IngredientDetailDTO> { Status = 0, Mess = "You can not delete this ingredient" });
+            //}
 
             ingredient.IsDeleted = 1;
+            ingredient.UpdatedBy = userSesion.Id;
 
             try
             {
@@ -152,6 +170,8 @@ namespace CateringManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> ImportIngredientToStorage([FromBody] ImportIngredientToStorageRequest request)
         {
+            var userSesion = HttpContext.Session.GetObjectFromJson<Users>("userLogin");
+
             var ingredient = await _ingredientsRepo.GetByID(request.IngredientId);
             if (ingredient == null)
             {
@@ -162,15 +182,22 @@ namespace CateringManagement.Controllers
             {
                 return Json(new ResponseModel { Status = 0, Mess = "Invalid quantity" });
             }
+            if (request.TotalPrice <= 0)
+            {
+                return Json(new ResponseModel { Status = 0, Mess = "Invalid price" });
+            }
 
             ingredient.Quantity += request.Quantity;
             ingredient.Price += request.TotalPrice;
+            ingredient.UpdatedBy = userSesion.Id;
 
             var ingredientImport = new IngredientImports
             {
                 IngredientId = ingredient.Id,
                 Quantity = request.Quantity,
-                ExpiredDate = DateTime.Now
+                ExpiredDate = DateTime.Now,
+                CreatedBy = userSesion.Id,
+                UpdatedBy = userSesion.Id
             };
 
             try

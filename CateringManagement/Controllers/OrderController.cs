@@ -115,6 +115,12 @@ namespace CateringManagement.Controllers
                 return Json(new ResponseModel { Status = 0, Mess = "Meal not found" });
             }
 
+            var quantityCount = request.Meals.Count(x => x.Quantity > 0);
+            if (quantityCount < meals.Count)
+            {
+                return Json(new ResponseModel { Status = 0, Mess = "Invalid quantity" });
+            }
+
             List<OrderDetail> mealData = new();
             decimal price = 0;
             foreach (var item in request.Meals)
@@ -228,6 +234,12 @@ namespace CateringManagement.Controllers
             if (meals.Count < mealIds.Count)
             {
                 return Json(new ResponseModel { Status = 0, Mess = "Meal not found" });
+            }
+
+            var quantityCount = request.Meals.Count(x => x.Quantity > 0);
+            if (quantityCount < meals.Count)
+            {
+                return Json(new ResponseModel { Status = 0, Mess = "Invalid quantity" });
             }
 
             List<OrderDetail> mealData = new();
