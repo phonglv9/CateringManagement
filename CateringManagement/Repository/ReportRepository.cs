@@ -23,7 +23,7 @@ namespace CateringManagement.Repository
                 {
                     var revenue = db.Orders
                                 .Where(od => od.CreatedAt.Date == date.Date && od.Status == OrderStatus.Done && od.IsDeleted != 1)
-                    .Sum(od => od.TotalPrice);
+                    .Sum(od => od.SellPrice);
 
 
 

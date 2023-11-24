@@ -10,6 +10,7 @@ namespace DAL.DomainClass
         public OrderStatus Status { get; set; }
         public DateTime PickupTime { get; set; } // thời gian dự kiến lấy hàng
         public decimal TotalPrice { get; set; }
+        public decimal SellPrice { get; set; }
 
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
 

@@ -8,9 +8,10 @@ namespace CateringManagement.Models.DTO
         public string Code { get; set; }
         public string CustomerName { get; set; }
         public string CustomerPhone { get; set; }
-        public OrderStatus Status { get; set; }
+        public string Status { get; set; }
         public string CreatedTime { get; set; }
         public string PickupDate { get; set; }
         public decimal TotalPrice { get; set; }
+        public decimal SellPrice { get; set; }
     }
 }

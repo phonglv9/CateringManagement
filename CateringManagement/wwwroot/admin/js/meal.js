@@ -83,7 +83,9 @@ function changeIngredient(mode = '') {
     if (selectedIngredient.val() == 0) {
         $('#unit-group-label' + mode).html('---');
     }
-    $('#unit-group-label' + mode).html(selectedIngredient.attr('data-unit'));
+    else {
+        $('#unit-group-label' + mode).html(selectedIngredient.attr('data-unit'));
+    }
 }
 
 function addIngredientToTable(mode = '') {
@@ -91,9 +93,9 @@ function addIngredientToTable(mode = '') {
     let ingredientId = selectedIngredient.val();
     let ingredientName = selectedIngredient.text();
     let ingredientUnit = selectedIngredient.attr("data-unit");
-    let ingredientUnitPrice = selectedIngredient.attr("data-unit-price");
-    let quantity = $('#quantity' + mode).val();
-    let rowPrice = parseFloat(ingredientUnitPrice * quantity);
+    let ingredientUnitPrice = parseFloat(selectedIngredient.attr("data-unit-price"));
+    let quantity = parseInt($('#quantity' + mode).val());
+    let rowPrice = parseFloat(ingredientUnitPrice * quantity).toFixed(2);
     
     if (ingredientId == 0 || quantity == '' || quantity <= 0) {
         return;
@@ -138,7 +140,7 @@ function removeIngredientFromTable(id, removedPrice, mode = '') {
     let rowCount = parseInt($('#table-row-count' + mode).val());
     $('#table-row-count' + mode).val(--rowCount);
 
-    // increase price
+    // decrease price
     let mealPrice = parseFloat($('#price' + mode).val());
     $('#price' + mode).val(mealPrice - removedPrice);
 

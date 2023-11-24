@@ -20,29 +20,31 @@ namespace CateringManagement.Repository
                     CustomerPhone = x.CustomerPhone,
                     CreatedTime = TextUtils.ConvertDateTimeToString(x.CreatedAt),
                     PickupDate = TextUtils.ConvertDateToString(x.PickupTime),
-                    Status = x.Status
+                    Status = OrderHelper.GetOrderStatus(x.Status),
+                    TotalPrice = x.TotalPrice,
+                    SellPrice = x.SellPrice
                 })
                 .ToListAsync();
 
             return data;
         }
 
-        //public async Task<int> InsertOrderIngredientList(List<OrderIngredients> OrderIngredients)
-        //{
-        //    db.OrderIngredients.AddRange(OrderIngredients);
-        //    return await db.SaveChangesAsync();
-        //}
+        public async Task<int> InsertOrderMealList(List<OrderDetail> orderMeals)
+        {
+            db.OrderDetails.AddRange(orderMeals);
+            return await db.SaveChangesAsync();
+        }
 
-        //public async Task<int> DeleteOrderIngredientList(List<OrderIngredients> OrderIngredients)
-        //{
-        //    List<OrderIngredients> dataUpdate = new();
-        //    foreach (var item in OrderIngredients)
-        //    {
-        //        item.IsDeleted = 1;
-        //        dataUpdate.Add(item);
-        //    }
-        //    db.OrderIngredients.UpdateRange(dataUpdate);
-        //    return await db.SaveChangesAsync();
-        //}
+        public async Task<int> DeleteOrderMealList(List<OrderDetail> orderMeals)
+        {
+            List<OrderDetail> dataUpdate = new();
+            foreach (var item in orderMeals)
+            {
+                item.IsDeleted = 1;
+                dataUpdate.Add(item);
+            }
+            db.OrderDetails.UpdateRange(dataUpdate);
+            return await db.SaveChangesAsync();
+        }
     }
 }

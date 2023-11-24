@@ -24,8 +24,10 @@
                             <th>Pickup Date</th>
                             <th>Customer Name</th>
                             <th>Phone Number</th>
+                            <th>Total Price (USD)</th>
+                            <th>Sell Price (USD)</th>
                             <th>Status</th>
-                            <th>Action</th>
+                            <th width="15%">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -61,7 +63,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <label for="" class="col-form-label">Pickup Date:</label>
-                                <input type="text" class="form-control" id="pickup-date">
+                                <input type="date" class="form-control" id="pickup-date">
                             </div>
                         </div>
                     </div>
@@ -85,11 +87,11 @@
                         </div>
                     </div>
                     <div class="mb-3">
-                        <button type="button" class="btn btn-primary text-white" id="add-ingredient-btn" onclick="addMealToTable()">Add Meal To Order</button>
+                        <button type="button" class="btn btn-primary text-white" onclick="addMealToTable()">Add Meal To Order</button>
                     </div>
                     <div class="mb-3">
                         <input hidden id="table-row-count" value="0" />
-                        <table class="table table-bordered" id="Orders-table">
+                        <table class="table table-bordered" id="orders-table">
                             <thead>
                                 <tr>
                                     <th>Meal</th>
@@ -138,7 +140,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="detail-order-modal" tabindex="-1" aria-labelledby="detailOrderLabel" aria-hidden="true">
+<div class="modal fade" id="detail-order-modal" tabindex="-1" aria-labelledby="addDetailLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -148,31 +150,68 @@
             <div class="modal-body">
                 <form>
                     <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">Name:</label>
-                        <input type="text" class="form-control" id="name-detail" disabled>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="" class="col-form-label">Customer Name:</label>
+                                <strong id="customer-name-detail"></strong>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="" class="col-form-label">Phone Number:</label>
+                                <strong id="customer-phone-detail"></strong>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="" class="col-form-label">Created Time:</label>
+                                <strong id="created-time-detail"></strong>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="" class="col-form-label">Pickup Date:</label>
+                                <strong id="pickup-date-detail"></strong>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="" class="col-form-label">Status:</label>
+                                <strong id="status-detail"></strong>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-12"><h5>Order Detail</h5></div>
+                        </div>
                     </div>
                     <div class="mb-3">
-                        <table class="table table-bordered" id="Orders-table">
+                        <table class="table table-bordered" id="orders-table-detail">
                             <thead>
                                 <tr>
-                                    <th>Ingredient Name</th>
+                                    <th>Meal</th>
+                                    <th>Price</th>
                                     <th>Quantity</th>
-                                    <th>Unit</th>
-                                    <th>Unit Price (USD)</th>
                                     <th>Total Price (USD)</th>
                                 </tr>
                             </thead>
-                            <tbody id="detail-Orders-table-body">
-                                
+                            <tbody id="detail-orders-table-body">
                             </tbody>
                         </table>
                     </div>
                     <div class="mb-3">
-                        <label for="message-text" class="col-form-label">Price:</label>
-                        <div class="input-group">
-                            <input type="number" class="form-control" id="price-detail" placeholder="Total price" value="0" aria-describedby="basic-addon2" disabled>
-                            <div class="input-group-append">
-                                <span class="input-group-text">USD</span>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="message-text" class="col-form-label">Total Price:</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="order-price-detail" placeholder="Total price" value="0" aria-describedby="basic-addon2" disabled>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">USD</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="message-text" class="col-form-label">Sell Price:</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="sell-price-detail" placeholder="Sell price" value="0" aria-describedby="basic-addon2" disabled>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">USD</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -196,56 +235,85 @@
                 <form>
                     <input hidden id="id-edit" />
                     <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">Name:</label>
-                        <input type="text" class="form-control" id="name-edit">
-                    </div>
-                    <div class="mb-3">
                         <div class="row">
                             <div class="col-md-6">
-                                <label for="message-text" class="col-form-label">Ingredient:</label>
-                                <select class="form-select" aria-label="Default select example" id="select-ingredient-edit" onchange="changeIngredient('-edit')">
-                                </select>
+                                <label for="" class="col-form-label">Customer Name:</label>
+                                <input type="text" class="form-control" id="customer-name-edit">
                             </div>
                             <div class="col-md-6">
-                                <label for="quantity" class="col-form-label">Quantity:</label>
-                                <div class="input-group">
-                                    <input type="number" class="form-control" id="quantity-edit" placeholder="Quantity" aria-describedby="basic-addon2">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text" id="unit-group-label-edit">---</span>
-                                    </div>
-                                </div>
+                                <label for="" class="col-form-label">Phone Number:</label>
+                                <input type="text" class="form-control" id="customer-phone-edit">
                             </div>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <button type="button" class="btn btn-primary text-white" onclick="addIngredientToTable('-edit')">Add Ingredient To Order</button>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="" class="col-form-label">Pickup Date:</label>
+                                <input type="date" class="form-control" id="pickup-date-edit">
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-12"><h5>Order Detail</h5></div>
+                            <div class="col-md-6">
+                                <label for="" class="col-form-label">Meal:</label>
+                                <select class="form-select" aria-label="Default select example" id="select-meal-edit" onchange="changeMeal('-edit')">
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="" class="col-form-label">Price:</label>
+                                <input type="text" class="form-control" id="meal-price-edit" disabled>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="" class="col-form-label">Quantity:</label>
+                                <input type="number" class="form-control" id="quantity-edit">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-primary text-white" onclick="addMealToTable('-edit')">Add Meal To Order</button>
                     </div>
                     <div class="mb-3">
                         <input hidden id="table-row-count-edit" value="0" />
-                        <table class="table table-bordered" id="Orders-table-edit">
+                        <table class="table table-bordered" id="orders-table-edit">
                             <thead>
                                 <tr>
-                                    <th>Ingredient Name</th>
+                                    <th>Meal</th>
+                                    <th>Price</th>
                                     <th>Quantity</th>
-                                    <th>Unit</th>
-                                    <th>Unit Price (USD)</th>
                                     <th>Total Price (USD)</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody id="Orders-table-body-edit">
-                                <tr id="Orders-table-no-row-edit">
-                                    <td colspan="6" align="center">No ingredient</td>
+                            <tbody id="orders-table-body-edit">
+                                <tr id="orders-table-no-row-edit">
+                                    <td colspan="5" align="center">No meal</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="mb-3">
-                        <label for="message-text" class="col-form-label">Price:</label>
-                        <div class="input-group">
-                            <input type="number" class="form-control" id="price-edit" placeholder="Total price" value="0" aria-describedby="basic-addon2" disabled>
-                            <div class="input-group-append">
-                                <span class="input-group-text">USD</span>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="message-text" class="col-form-label">Total Price:</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="order-price-edit" placeholder="Total price" value="0" aria-describedby="basic-addon2" disabled>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">USD</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="message-text" class="col-form-label">Sell Price:</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="sell-price-edit" placeholder="Sell price" value="0" aria-describedby="basic-addon2" disabled>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">USD</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -269,7 +337,7 @@
             <div class="modal-body">
                 <form>
                     <input hidden id="id-delete" />
-                    <div>Are you sure to delete this Order?</div>
+                    <div>Are you sure to delete this order?</div>
                 </form>
             </div>
             <div class="modal-footer">
