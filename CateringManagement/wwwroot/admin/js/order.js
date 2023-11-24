@@ -36,6 +36,9 @@ function loadDataOrders() {
                     let html = ``;
                     html += `<button type="button" class="btn btn-primary m-1" title="View detail" onclick="showDetailModal('${row.Id}')"><i class="fas fa-eye"></i></i></button>`;
                     html += `<button type="button" class="btn btn-warning m-1" title="Edit" onclick="showEditModal('${row.Id}')"><i class="fas fa-edit"></i></i></button>`;
+                    if (row.Status != 'Done') {
+                        html += `<button type="button" class="btn btn-success m-1" title="Complete" onclick="showCompleteModal('${row.Id}')"><i class="fas fa-check"></i></i></button>`;
+                    }
                     html += `<button type="button" class="btn btn-danger m-1" title="Delete" onclick="showDeleteModal('${row.Id}')"><i class="fas fa-trash"></i></i></button>`;
                     return html;
                 }
@@ -417,6 +420,34 @@ function deleteOrder() {
             if (result.status == 1) {
                 toastr.success(result.mess, "Success");
                 $('#delete-order-modal').modal('hide');
+                loadDataTable();
+            } else {
+                toastr.error(result.mess, "Error");
+            }
+        },
+        error: function (errormessage) {
+            toastr.error(errormessage.responseText, "Error");
+        }
+    });
+}
+
+function showCompleteModal(id) {
+    $('#id-complete').val(id);
+    $('#complete-order-modal').modal('show');
+}
+
+function completeOrder() {
+    $.ajax({
+        url: "/Order/CompleteOrder/" + $('#id-complete').val(),
+        type: "POST",
+        contentType: "application/json;charset=utf-8",
+        dataType: "json",
+        async: true,
+        processData: false,
+        success: function (result) {
+            if (result.status == 1) {
+                toastr.success(result.mess, "Success");
+                $('#complete-order-modal').modal('hide');
                 loadDataTable();
             } else {
                 toastr.error(result.mess, "Error");

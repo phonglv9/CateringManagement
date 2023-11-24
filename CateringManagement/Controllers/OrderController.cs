@@ -6,12 +6,14 @@ using CateringManagement.Repository;
 using DAL.Context;
 using DAL.DomainClass;
 using DAL.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 
 namespace CateringManagement.Controllers
 {
+    [Authorize(Roles = "admin,chef,reception")]
     public class OrderController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -89,6 +91,8 @@ namespace CateringManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> AddOrder([FromBody] OrderCreateRequest request)
         {
+            var userSesion = HttpContext.Session.GetObjectFromJson<Users>("userLogin");
+
             // validate
             if (string.IsNullOrEmpty(request.CustomerName))
             {
@@ -121,7 +125,9 @@ namespace CateringManagement.Controllers
                 {
                     MealId = meal.Id,
                     Quantity = item.Quantity,
-                    TotalPrice = mealTotalPrice
+                    TotalPrice = mealTotalPrice,
+                    CreatedBy = userSesion.Id,
+                    UpdatedBy = userSesion.Id
                 });
                 price += mealTotalPrice;
             }
@@ -134,7 +140,9 @@ namespace CateringManagement.Controllers
                 PickupTime = request.PickupDate,
                 TotalPrice = decimal.Round(price, 2),
                 SellPrice = decimal.Round(price / (decimal)0.35, 2),
-                OrderDetails = mealData
+                OrderDetails = mealData,
+                CreatedBy = userSesion.Id,
+                UpdatedBy = userSesion.Id
             };
 
             try
@@ -192,6 +200,8 @@ namespace CateringManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateOrder([FromBody] OrderUpdateRequest request, Guid id)
         {
+            var userSesion = HttpContext.Session.GetObjectFromJson<Users>("userLogin");
+
             var order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted == 0);
             if (order == null)
             {
@@ -233,7 +243,9 @@ namespace CateringManagement.Controllers
                     OrderId = order.Id,
                     MealId = meal.Id,
                     Quantity = item.Quantity,
-                    TotalPrice = mealTotalPrice
+                    TotalPrice = mealTotalPrice,
+                    CreatedBy = userSesion.Id,
+                    UpdatedBy = userSesion.Id
                 });
                 price += mealTotalPrice;
             }
@@ -243,10 +255,11 @@ namespace CateringManagement.Controllers
             order.PickupTime = request.PickupDate;
             order.TotalPrice = decimal.Round(price, 2);
             order.SellPrice = decimal.Round(price / (decimal)0.35, 2);
+            order.UpdatedBy = userSesion.Id;
 
             try
             {
-                await _ordersRepo.DeleteOrderMealList(oldOrderMeals);
+                await _ordersRepo.DeleteOrderMealList(oldOrderMeals, userSesion.Id);
                 await _ordersRepo.InsertOrderMealList(mealData);
                 await _ordersRepo.Update(order);
 
@@ -261,6 +274,8 @@ namespace CateringManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteOrder(Guid id)
         {
+            var userSesion = HttpContext.Session.GetObjectFromJson<Users>("userLogin");
+
             var order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted == 0);
             if (order == null)
             {
@@ -268,18 +283,44 @@ namespace CateringManagement.Controllers
             }
 
             order.IsDeleted = 1;
+            order.UpdatedBy = userSesion.Id;
 
             var orderDetails = await _context.OrderDetails.Where(x => x.OrderId == id && x.IsDeleted == 0).ToListAsync();
 
             try
             {
                 await _ordersRepo.Update(order);
-                await _ordersRepo.DeleteOrderMealList(orderDetails);
+                await _ordersRepo.DeleteOrderMealList(orderDetails, userSesion.Id);
                 return Json(new ResponseModel { Status = 1, Mess = "Delete order successfully" });
             }
             catch (Exception e)
             {
                 return Json(new ResponseModel { Status = 0, Mess = "Delete order failed" });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CompleteOrder(Guid id)
+        {
+            var userSesion = HttpContext.Session.GetObjectFromJson<Users>("userLogin");
+
+            var order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted == 0);
+            if (order == null)
+            {
+                return Json(new ResponseModel { Status = 0, Mess = "Order not found" });
+            }
+
+            order.Status = OrderStatus.Done;
+            order.UpdatedBy = userSesion.Id;
+
+            try
+            {
+                await _ordersRepo.Update(order);
+                return Json(new ResponseModel { Status = 1, Mess = "Complete order successfully" });
+            }
+            catch (Exception e)
+            {
+                return Json(new ResponseModel { Status = 0, Mess = "Complete order failed" });
             }
         }
     }

@@ -35,12 +35,13 @@ namespace CateringManagement.Repository
             return await db.SaveChangesAsync();
         }
 
-        public async Task<int> DeleteOrderMealList(List<OrderDetail> orderMeals)
+        public async Task<int> DeleteOrderMealList(List<OrderDetail> orderMeals, Guid userId)
         {
             List<OrderDetail> dataUpdate = new();
             foreach (var item in orderMeals)
             {
                 item.IsDeleted = 1;
+                item.UpdatedBy = userId;
                 dataUpdate.Add(item);
             }
             db.OrderDetails.UpdateRange(dataUpdate);

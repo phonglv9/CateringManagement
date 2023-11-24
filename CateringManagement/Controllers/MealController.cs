@@ -4,11 +4,13 @@ using CateringManagement.Models.Requests;
 using CateringManagement.Repository;
 using DAL.Context;
 using DAL.DomainClass;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CateringManagement.Controllers
 {
+    [Authorize(Roles = "admin,chef")]
     public class MealController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -50,6 +52,8 @@ namespace CateringManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> AddMeal([FromBody] MealCreateRequest request)
         {
+            var userSesion = HttpContext.Session.GetObjectFromJson<Users>("userLogin");
+
             // validate
             if (string.IsNullOrEmpty(request.Name))
             {
@@ -76,7 +80,9 @@ namespace CateringManagement.Controllers
                 ingredientData.Add(new MealIngredients
                 {
                     IngredientId = ingredient.Id,
-                    Quantity = item.Quantity
+                    Quantity = item.Quantity,
+                    CreatedBy = userSesion.Id,
+                    UpdatedBy = userSesion.Id
                 });
                 price += item.Quantity * ingredient.PriceUnit;
             }
@@ -84,7 +90,9 @@ namespace CateringManagement.Controllers
             {
                 Name = request.Name,
                 Price = price,
-                MealIngredients = ingredientData
+                MealIngredients = ingredientData,
+                CreatedBy = userSesion.Id,
+                UpdatedBy = userSesion.Id
             };
 
             try
@@ -131,7 +139,7 @@ namespace CateringManagement.Controllers
                 Id = id,
                 Name = meal.Name,
                 Price = totalPrice,
-                Ingredients = ingredientData
+                Ingredients = ingredientData,
             };
             return Json(new ResponseModel<MealDetailDTO> { Status = 1, Data = data });
         }
@@ -139,8 +147,9 @@ namespace CateringManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateMeal([FromBody] MealUpdateRequest request, Guid id)
         {
-            var meal = await _context.Meals
-                .FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted == 0);
+            var userSesion = HttpContext.Session.GetObjectFromJson<Users>("userLogin");
+
+            var meal = await _context.Meals.FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted == 0);
             if (meal == null)
             {
                 return Json(new ResponseModel { Status = 0, Mess = "Meal not found" });
@@ -175,17 +184,20 @@ namespace CateringManagement.Controllers
                 {
                     MealId = meal.Id,
                     IngredientId = ingredient.Id,
-                    Quantity = item.Quantity
+                    Quantity = item.Quantity,
+                    CreatedBy = userSesion.Id,
+                    UpdatedBy = userSesion.Id
                 });
                 price += item.Quantity * ingredient.PriceUnit;
             }
 
             meal.Name = request.Name;
             meal.Price = price;
+            meal.UpdatedBy = userSesion.Id;
 
             try
             {
-                await _mealsRepo.DeleteMealIngredientList(oldMealIngredients);
+                await _mealsRepo.DeleteMealIngredientList(oldMealIngredients, userSesion.Id);
                 await _mealsRepo.InsertMealIngredientList(ingredientData);
                 await _mealsRepo.Update(meal);
 
@@ -200,6 +212,8 @@ namespace CateringManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteMeal(Guid id)
         {
+            var userSesion = HttpContext.Session.GetObjectFromJson<Users>("userLogin");
+
             var meal = await _context.Meals.FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted == 0);
             if (meal == null)
             {
@@ -207,13 +221,14 @@ namespace CateringManagement.Controllers
             }
 
             meal.IsDeleted = 1;
+            meal.UpdatedBy = userSesion.Id;
 
             var mealIngredients = await _context.MealIngredients.Where(x => x.MealId == id && x.IsDeleted == 0).ToListAsync();
 
             try
             {
                 await _mealsRepo.Update(meal);
-                await _mealsRepo.DeleteMealIngredientList(mealIngredients);
+                await _mealsRepo.DeleteMealIngredientList(mealIngredients, userSesion.Id);
                 return Json(new ResponseModel { Status = 1, Mess = "Delete meal successfully" });
             }
             catch (Exception e)
