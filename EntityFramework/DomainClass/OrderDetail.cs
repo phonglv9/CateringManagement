@@ -9,6 +9,5 @@
 
         public Orders Order { get; set; }
         public Meals Meal { get; set; }
-
     }
 }
