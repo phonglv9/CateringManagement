@@ -49,10 +49,29 @@ namespace CateringManagement.Controllers
             return Json(new ResponseModel<List<SimpleIngredientDTO>> { Status = 1, Data = data });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetListCategories()
+        {
+            var data = await _context.MealCategories.Where(x => x.IsDeleted == 0)
+                .Select(x => new MealCategoryDetailDTO
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                })
+                .ToListAsync();
+            return Json(new ResponseModel<List<MealCategoryDetailDTO>> { Status = 1, Data = data });
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddMeal([FromBody] MealCreateRequest request)
         {
             var userSesion = HttpContext.Session.GetObjectFromJson<Users>("userLogin");
+
+            var category = await _context.MealCategories.FirstOrDefaultAsync(x => x.Id == request.CategoryId && x.IsDeleted == 0);
+            if (category == null)
+            {
+                return Json(new ResponseModel { Status = 0, Mess = "Category not found" });
+            }
 
             // validate
             if (string.IsNullOrEmpty(request.Name))
@@ -95,7 +114,10 @@ namespace CateringManagement.Controllers
             var newMeal = new Meals
             {
                 Name = request.Name,
+                MealCategoryId = request.CategoryId,
                 Price = price,
+                Description = request.Description,
+                Image = "",
                 MealIngredients = ingredientData,
                 CreatedBy = userSesion.Id,
                 UpdatedBy = userSesion.Id
@@ -115,7 +137,8 @@ namespace CateringManagement.Controllers
         [HttpGet]
         public async Task<IActionResult> GetDetail(Guid id)
         {
-            var meal = await _context.Meals.Include(x => x.MealIngredients.Where(y => y.IsDeleted == 0))
+            var meal = await _context.Meals.Include(x => x.MealCategory)
+                .Include(x => x.MealIngredients.Where(y => y.IsDeleted == 0))
                 .ThenInclude(x => x.Ingredient)
                 .Where(x => x.Id == id && x.IsDeleted == 0)
                 .FirstOrDefaultAsync();
@@ -145,6 +168,9 @@ namespace CateringManagement.Controllers
                 Id = id,
                 Name = meal.Name,
                 Price = totalPrice,
+                CategoryId = meal.MealCategoryId,
+                CategoryName = meal.MealCategory.Name,
+                Description = meal.Description,
                 Ingredients = ingredientData,
             };
             return Json(new ResponseModel<MealDetailDTO> { Status = 1, Data = data });
@@ -159,6 +185,12 @@ namespace CateringManagement.Controllers
             if (meal == null)
             {
                 return Json(new ResponseModel { Status = 0, Mess = "Meal not found" });
+            }
+
+            var category = await _context.MealCategories.FirstOrDefaultAsync(x => x.Id == request.CategoryId && x.IsDeleted == 0);
+            if (category == null)
+            {
+                return Json(new ResponseModel { Status = 0, Mess = "Category not found" });
             }
 
             // validate
@@ -204,7 +236,9 @@ namespace CateringManagement.Controllers
             }
 
             meal.Name = request.Name;
+            meal.MealCategoryId = request.CategoryId;
             meal.Price = price;
+            meal.Description = request.Description;
             meal.UpdatedBy = userSesion.Id;
 
             try

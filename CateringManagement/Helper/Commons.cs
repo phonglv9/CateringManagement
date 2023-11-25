@@ -281,11 +281,12 @@ namespace CateringManagement.Helper
                 Directory.CreateDirectory(path);
         }
 
-        public static async Task<string> UploadFile(Microsoft.AspNetCore.Http.IFormFile file, string sDirectory, string newname = null)
+        public static async Task<string?> UploadFile(IFormFile file, string sDirectory, string newname = null)
         {
             try
             {
-                if (newname == null) newname = file.FileName;
+                int timestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+                newname ??= file.FileName + $"_{timestamp}";
                 string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", sDirectory);
                 CreateIfMissing(path);
                 string pathFile = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", sDirectory, newname);
@@ -295,14 +296,12 @@ namespace CateringManagement.Helper
                 {
                     return null;
                 }
-                else
+
+                using (var stream = new FileStream(pathFile, FileMode.Create))
                 {
-                    using (var stream = new FileStream(pathFile, FileMode.Create))
-                    {
-                        await file.CopyToAsync(stream);
-                    }
-                    return newname;
+                    await file.CopyToAsync(stream);
                 }
+                return newname;
             }
             catch
             {

@@ -10,12 +10,14 @@ namespace CateringManagement.Repository
     {
         public async Task<List<MealDTO>> GetAllData()
         {
-            var data = await db.Meals.Where(x => x.IsDeleted == 0)
+            var data = await db.Meals.Include(x => x.MealCategory).Where(x => x.IsDeleted == 0)
                 .Select(x => new MealDTO
                 {
                     Id = x.Id,
                     Name = x.Name,
                     Price = x.Price,
+                    Category = x.MealCategory.Name,
+                    Description = x.Description
                 })
                 .ToListAsync();
 

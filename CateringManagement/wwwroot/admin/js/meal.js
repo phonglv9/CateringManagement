@@ -25,6 +25,8 @@ function loadDataMeals() {
         "columns": [
             { "data": "Name" },
             { "data": "Price" },
+            { "data": "Category" },
+            { "data": "Description" },
             {
                 "data": null, "render": function (data, type, row) {
                     let html = ``;
@@ -48,9 +50,13 @@ function showAddModal() {
     $('#unit').val('');
     $('#price').val(0);
     $("#select-ingredient").val("0").change();
+    $("#category").val("0").change();
+    $("#description").val('');
     $('#quantity').val('');
     $('#table-row-count').val(0);
     $('#meals-table-body').html(`<tr id="meals-table-no-row"><td colspan="6"align="center">No ingredient</td></tr>`);
+
+    getCategorySelect();
 
     $.ajax({
         url: "/Meal/GetSimpleListIngredients",
@@ -68,6 +74,31 @@ function showAddModal() {
                 $('#select-ingredient').html(htmlSelect);
 
                 $('#add-meal-modal').modal('show');
+            } else {
+                toastr.error(result.mess, "Error");
+            }
+        },
+        error: function (errormessage) {
+            toastr.error(errormessage.responseText, "Error");
+        }
+    });
+}
+
+function getCategorySelect(mode = '', selectedValue = '0') {
+    $.ajax({
+        url: "/Meal/GetListCategories",
+        type: "GET",
+        contentType: "application/json;charset=utf-8",
+        dataType: "json",
+        async: true,
+        processData: false,
+        success: function (result) {
+            if (result.status == 1) {
+                var htmlSelect = '<option value="0" selected>Select Category</option>';
+                $.each(result.data, function (key, item) {
+                    htmlSelect += `<option value="${item.id}" id="${item.id}">${item.name}</option>`;
+                });
+                $('#category' + mode).html(htmlSelect);
             } else {
                 toastr.error(result.mess, "Error");
             }
@@ -156,9 +187,14 @@ function removeIngredientFromTable(id, removedPrice, mode = '') {
 
 function addMeal() {
     var ingredientArr = [];
-
+    
     if ($('#name').val() == '') {
         toastr.error("Please enter name", "Error");
+        return;
+    }
+    var categoryId = $('#category').find(":selected").val();
+    if (categoryId == '0') {
+        toastr.error("Please select category", "Error");
         return;
     }
 
@@ -176,6 +212,8 @@ function addMeal() {
 
     var dataObj = {
         Name: $('#name').val(),
+        CategoryId: categoryId,
+        Description: $('#description').val(),
         Ingredients: ingredientArr
     };
 
