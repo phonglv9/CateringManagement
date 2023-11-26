@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-    loadDataCategorys();
+    loadDataCategories();
 
     $('#add-btn').on('click', function () {
         showAddModal();
@@ -14,7 +14,7 @@
     });
 });
 
-function loadDataCategorys() {
+function loadDataCategories() {
     $('#categories-table').DataTable({
         "ajax": {
             "url": "/MealCategory/GetListMealCategories",

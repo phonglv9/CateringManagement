@@ -1,0 +1,104 @@
+﻿@{
+    ViewData["Title"] = "Menu";
+}
+
+<link href="~/assets/css/style.css?v=3.0.0" rel="stylesheet">
+
+<main style="margin:25px">
+    <div class="row">
+        <div class="col-12">
+            <button class="btn btn-primary" onclick="showCartMoal()">
+                <i class="fa fa-shopping-cart" aria-hidden="true"></i> 
+                Cart <span id="cart-info"></span>
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-9">
+            <div class="list-products-5" id="meal-list">
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="sidebar-border mt-10">
+                <div class="sidebar-head">
+                    <h6 class="color-gray-900">Categories</h6>
+                </div>
+                <div class="sidebar-content">
+                    <ul class="list-nav-arrow" id="category-list">
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div class="modal fade" id="cart-modal" tabindex="-1" aria-labelledby="cartLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="">Cart Order</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="" class="col-form-label">Customer Name:</label>
+                                <input type="text" class="form-control" id="customer-name">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="" class="col-form-label">Phone Number:</label>
+                                <input type="text" class="form-control" id="customer-phone">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="" class="col-form-label">Pickup Date:</label>
+                                <input type="date" class="form-control" id="pickup-date">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <input hidden id="table-row-count" value="0" />
+                        <table class="table table-bordered" id="orders-table">
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Meal</th>
+                                    <th>Catergory</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total Price (USD)</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-table-body">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="message-text" class="col-form-label">Total Price: </label>
+                                <strong>$<span id="total-price"></span></strong>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" onclick="clearCart()">Clear cart</button>
+                <button type="button" class="btn btn-primary" id="save-btn" onclick="saveOrder()">Create order</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/admin/js/menu.js" asp-append-version="true"></script>
+}
+
