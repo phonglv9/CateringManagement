@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace CateringManagement.Controllers
 {
-    //[Authorize(Roles = "admin,storage,chef,reception")]
+    [Authorize(Roles = "admin,storage,chef,reception")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

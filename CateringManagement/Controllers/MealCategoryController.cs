@@ -4,11 +4,13 @@ using CateringManagement.Models.Requests;
 using CateringManagement.Repository;
 using DAL.Context;
 using DAL.DomainClass;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CateringManagement.Controllers
 {
+    [Authorize(Roles = "admin,chef")]
     public class MealCategoryController : Controller
     {
         private readonly ApplicationDbContext _context;
