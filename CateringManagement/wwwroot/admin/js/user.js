@@ -61,18 +61,18 @@ function editUser() {
         contentType: false, // Important for letting jQuery handle the contentType
         success: function (response) {
             if (response.status == 1) {
-                MessageSucces(response.mess);
+                toastr.success(response.mess, "Success");
                 loadDataUsers();
                 $('#addUser').modal('hide');
             } else if (response.status == 2) {
-                MessageError(response.mess);
+                toastr.error(response.mess, "Error");
             }else
             {
-                MessageError(response.mess);
+                toastr.error(response.mess, "Error");
             }
         },
         error: function (error) {
-            MessageError(error);
+            toastr.error(error, "Error");
         }
     });
 
@@ -121,15 +121,15 @@ function onEditUser(employeeId) {
                 contentType: false, // Important for letting jQuery handle the contentType
                 success: function (response) {
                     if (response.status == 1) {
-                        MessageSucces(response.mess);
+                        toastr.success(response.mess, "Success");
                         loadDataUsers();
                         $('#addUser').modal('hide');
                     } else {
-                        MessageError(response.mess);
+                        toastr.error(response.mess, "Error");
                     }
                 },
                 error: function (error) {
-                    MessageError(error);
+                    toastr.error(error, "Error");
                 }
             });
         }
@@ -217,15 +217,15 @@ function onDeleteUser(id) {
                 data: { userId: id },
                 success: function (response) {
                     if (response.status == 1) {
-                        MessageSucces(response.mess);
+                        toastr.success(response.mess, "Success");
                         loadDataUsers();
 
                     } else {
-                        MessageError(response.mess);
+                        toastr.error(response.mess, "Error");
                     }
                 },
                 error: function (xhr, status, error) {
-
+                    toastr.error(error, "Error");
                 }
             });
         }
@@ -298,15 +298,15 @@ function addUser() {
         contentType: false, // Important for letting jQuery handle the contentType
         success: function (response) {
             if (response.status == 1) {
-                MessageSucces(response.mess);
+                toastr.success(response.mess, "Success");
                 loadDataUsers();
                 $('#addUser').modal('hide');
             } else {
-                MessageError(response.mess);
+                toastr.error(response.mess, "Error");
             }
         },
         error: function (error) {
-            MessageError(error);
+            toastr.error(error, "Error");
         }
     });
 

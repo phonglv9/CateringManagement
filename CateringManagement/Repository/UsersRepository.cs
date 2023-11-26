@@ -31,24 +31,25 @@ namespace CateringManagement.Repository
                     );
                 }
 
-                var lstUsers = await query.Select(user => new UsersDTO
+                var lstUsers = await query.OrderByDescending(c => c.CreatedAt).ToListAsync();
+
+                var data = lstUsers.Select(user => new UsersDTO
                 {
                     EmployeeId = user.EmployeeId,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     Email = user.Email,
-                    CreateDate =  user.CreatedAt.ToString(),
-                    UpdateDate = user.UpdatedAt.ToString(),
+                    CreateDate = TextUtils.ConvertDateTimeToString(user.CreatedAt),
+                    UpdateDate = TextUtils.ConvertDateTimeToString(user.UpdatedAt),
                     DateOfBirth = TextUtils.ConvertDateToString(user.DateOfBirth),
                     Sex = user.Sex == 1 ? "Male" : "Female",
                     Status = user.Status == 1 ? "Active" : "InActive",
                     Image = user.Image,
                     Role = user.Role.ToString(),
 
-                }).OrderByDescending(c => c.CreateDate).ToListAsync();
+                }).ToList();
 
-
-                return lstUsers;
+                return data;
             }
             catch (Exception ex)
             {

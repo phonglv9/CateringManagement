@@ -8,6 +8,8 @@
         public string Description { get; set; }
         public Guid CategoryId { get; set; }
         public string CategoryName { get; set; }
+        public string Image { get; set; }
+        public string ImageSrc { get; set; }
         public List<MealIngredientDTO> Ingredients { get; set; }
     }
 

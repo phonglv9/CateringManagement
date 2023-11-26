@@ -4,6 +4,8 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Text;
 using Newtonsoft.Json;
+using DAL.DomainClass;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CateringManagement.Helper
 {
@@ -281,18 +283,20 @@ namespace CateringManagement.Helper
                 Directory.CreateDirectory(path);
         }
 
-        public static async Task<string?> UploadFile(IFormFile file, string sDirectory, string newname = null)
+        public static async Task<string?> UploadFile(IFormFile file, string sDirectory)
         {
             try
             {
                 int timestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
-                newname ??= file.FileName + $"_{timestamp}";
+                string extension = Path.GetExtension(file.FileName);
+                var fileName = $"{Path.GetFileNameWithoutExtension(file.FileName)}_{timestamp}{extension}";
+                
                 string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", sDirectory);
                 CreateIfMissing(path);
-                string pathFile = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", sDirectory, newname);
+                string pathFile = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", sDirectory, fileName);
+
                 var supportedTypes = new[] { "jpg", "jpeg", "png", "gif" };
-                var fileExt = System.IO.Path.GetExtension(file.FileName).Substring(1);
-                if (!supportedTypes.Contains(fileExt.ToLower())) /// Khác các file định nghĩa
+                if (!supportedTypes.Contains(extension[1..].ToLower()))
                 {
                     return null;
                 }
@@ -301,7 +305,8 @@ namespace CateringManagement.Helper
                 {
                     await file.CopyToAsync(stream);
                 }
-                return newname;
+
+                return fileName;
             }
             catch
             {

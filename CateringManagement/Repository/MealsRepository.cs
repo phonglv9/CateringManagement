@@ -17,7 +17,8 @@ namespace CateringManagement.Repository
                     Name = x.Name,
                     Price = x.Price,
                     Category = x.MealCategory.Name,
-                    Description = x.Description
+                    Description = x.Description,
+                    Image = MealHelper.GetMealImageSrc(x.Image)
                 })
                 .ToListAsync();
 

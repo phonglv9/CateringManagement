@@ -10,7 +10,6 @@ namespace CateringManagement.Models.DTO
         public string Email { get; set; }
         public string CreateDate { get; set; }
         public string UpdateDate { get; set; }
-        [Column(TypeName = "date")]
         public string DateOfBirth { get; set; }
         public string Sex { get; set; }
         public string Status { get; set; }

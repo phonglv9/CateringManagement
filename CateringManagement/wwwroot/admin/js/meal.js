@@ -23,6 +23,11 @@ function loadDataMeals() {
             "dataSrc": ""
         },
         "columns": [
+            {
+                "data": null, "render": function (data, type, row) {
+                    return `<img src="${row.Image}" style="max-width: 150px; max-height: 150px;" alter="img" title="img">`;
+                }
+            },
             { "data": "Name" },
             { "data": "Price" },
             { "data": "Category" },
@@ -55,6 +60,8 @@ function showAddModal() {
     $('#quantity').val('');
     $('#table-row-count').val(0);
     $('#meals-table-body').html(`<tr id="meals-table-no-row"><td colspan="6"align="center">No ingredient</td></tr>`);
+    $('#image').val('');
+    $('#selected-image').attr('src', '').hide();
 
     getCategorySelect();
 
@@ -84,7 +91,7 @@ function showAddModal() {
     });
 }
 
-function getCategorySelect(mode = '', selectedValue = '0') {
+function getCategorySelect(mode = '', selectedVal = '') {
     $.ajax({
         url: "/Meal/GetListCategories",
         type: "GET",
@@ -94,10 +101,21 @@ function getCategorySelect(mode = '', selectedValue = '0') {
         processData: false,
         success: function (result) {
             if (result.status == 1) {
-                var htmlSelect = '<option value="0" selected>Select Category</option>';
-                $.each(result.data, function (key, item) {
-                    htmlSelect += `<option value="${item.id}" id="${item.id}">${item.name}</option>`;
-                });
+                var htmlSelect = '';
+                if (mode == '') {
+                    htmlSelect = '<option value="0" selected>Select Category</option>';
+                    $.each(result.data, function (key, item) {
+                        htmlSelect += `<option value="${item.id}" id="${item.id}">${item.name}</option>`;
+                    });
+                }
+                else {
+                    htmlSelect = '<option value="0">Select Category</option>';
+                    $.each(result.data, function (key, item) {
+                        var selectedAttr = item.id == selectedVal ? 'selected' : '';
+                        htmlSelect += `<option value="${item.id}" id="${item.id}" ${selectedAttr}>${item.name}</option>`;
+                    });
+                }
+                
                 $('#category' + mode).html(htmlSelect);
             } else {
                 toastr.error(result.mess, "Error");
@@ -107,6 +125,24 @@ function getCategorySelect(mode = '', selectedValue = '0') {
             toastr.error(errormessage.responseText, "Error");
         }
     });
+
+    if (mode == '-edit') {
+        $("#category-edit").val(selectedVal).change();
+    }
+}
+
+function showSelectedImage(input, mode = '') {
+    var file = input.files[0];
+    if (file) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#selected-image' + mode).attr('src', e.target.result);
+            $('#selected-image' + mode).show();
+        }
+
+        reader.readAsDataURL(file);
+    }
 }
 
 function changeIngredient(mode = '') {
@@ -192,6 +228,13 @@ function addMeal() {
         toastr.error("Please enter name", "Error");
         return;
     }
+
+    var image = $('#image')[0].files[0];
+    if (!image) {
+        toastr.error("Please choose the image", "Error");
+        return;
+    }
+
     var categoryId = $('#category').find(":selected").val();
     if (categoryId == '0') {
         toastr.error("Please select category", "Error");
@@ -210,21 +253,23 @@ function addMeal() {
         return;
     }
 
-    var dataObj = {
-        Name: $('#name').val(),
-        CategoryId: categoryId,
-        Description: $('#description').val(),
-        Ingredients: ingredientArr
-    };
+    var formData = new FormData();
+    formData.append('Name', $('#name').val());
+    formData.append('image', image);
+    formData.append('CategoryId', categoryId);
+    formData.append('Description', $('#description').val());
+
+    $.each(ingredientArr, function (index, value) {
+        formData.append(`Ingredients[${index}].IngredientId`, value.IngredientId);
+        formData.append(`Ingredients[${index}].Quantity`, value.Quantity);
+    });
 
     $.ajax({
         url: "/Meal/AddMeal",
-        data: JSON.stringify(dataObj),
+        data: formData,
         type: "POST",
-        contentType: "application/json;charset=utf-8",
-        dataType: "json",
-        async: true,
         processData: false,
+        contentType: false,
         success: function (result) {
             if (result.status == 1) {
                 toastr.success(result.mess, "Success");
@@ -241,14 +286,6 @@ function addMeal() {
 }
 
 function showDetailModal(id) {
-    //$('#name').val('');
-    //$('#unit').val('');
-    //$('#price').val(0);
-    //$("#select-ingredient").val("0").change();
-    //$('#quantity').val('');
-    //$('#table-row-count').val(0);
-    //$('#meals-table-body').html(`<tr id="meals-table-no-row"><td colspan="6"align="center">No ingredient</td></tr>`);
-
     $.ajax({
         url: "/Meal/GetDetail/" + id,
         type: "GET",
@@ -260,6 +297,9 @@ function showDetailModal(id) {
             if (result.status == 1) {
                 $('#name-detail').val(result.data.name);
                 $('#price-detail').val(result.data.price);
+                $('#category-detail').val(result.data.categoryName);
+                $('#description-detail').val(result.data.description);
+                $('#image-detail').attr('src', result.data.imageSrc);
 
                 let htmlRow = ``;
                 let ingredients = result.data.ingredients;
@@ -286,14 +326,6 @@ function showDetailModal(id) {
 }
 
 function getDetailForEditModal(id) {
-    //$('#name').val('');
-    //$('#unit').val('');
-    //$('#price').val(0);
-    //$("#select-ingredient-edit").val("0").change();
-    //$('#quantity-edit').val('');
-    //$('#table-row-count').val(0);
-    //$('#meals-table-body').html(`<tr id="meals-table-no-row"><td colspan="6"align="center">No ingredient</td></tr>`);
-
     $.ajax({
         url: "/Meal/GetDetail/" + id,
         type: "GET",
@@ -303,8 +335,11 @@ function getDetailForEditModal(id) {
         processData: false,
         success: function (result) {
             if (result.status == 1) {
+                $('#selected-image-edit').attr('src', result.data.imageSrc);
+                $('#selected-image-edit').show();
                 $('#name-edit').val(result.data.name);
                 $('#price-edit').val(result.data.price);
+                $('#description-edit').val(result.data.description);
 
                 let htmlRow = ``;
                 let ingredients = result.data.ingredients;
@@ -324,6 +359,9 @@ function getDetailForEditModal(id) {
 
                 $('#table-row-count-edit').val(ingredients.length);
                 $('#meals-table-body-edit').html(htmlRow);
+
+                // select category
+                getCategorySelect('-edit', result.data.categoryId);
             } else {
                 toastr.error(result.mess, "Error");
             }
@@ -335,14 +373,10 @@ function getDetailForEditModal(id) {
 }
 
 function showEditModal(id) {
-    //$('#name-edit').val('');
-    //$('#unit-edit').val('');
-    //$('#price-edit').val(0);
     $("#select-ingredient-edit").val("0").change();
     $('#quantity-edit').val('');
     $('#id-edit').val(id);
-    //$('#table-row-count-edit').val(0);
-    //$('#meals-table-body-edit').html(`<tr id="meals-table-no-row-edit"><td colspan="6"align="center">No ingredient</td></tr>`);
+    $('#image-edit').val('');
 
     getDetailForEditModal(id);
 
@@ -375,6 +409,12 @@ function showEditModal(id) {
 function updateMeal(id) {
     var ingredientArr = [];
 
+    var categoryId = $('#category-edit').find(":selected").val();
+    if (categoryId == '0') {
+        toastr.error("Please select category", "Error");
+        return;
+    }
+
     $('#meals-table-body-edit tr.has-data').each(function (index, value) {
         ingredientArr.push({
             IngredientId: $(this).attr('data-row-id'),
@@ -392,19 +432,29 @@ function updateMeal(id) {
         return;
     }
 
-    var dataObj = {
-        Name: $('#name-edit').val(),
-        Ingredients: ingredientArr
-    };
+    var image = $('#image-edit')[0].files[0];
+    if (!image && $('#selected-image-edit').attr('src') == '') {
+        toastr.error("Please choose the image", "Error");
+        return;
+    }
+
+    var formData = new FormData();
+    formData.append('Name', $('#name-edit').val());
+    formData.append('image', image);
+    formData.append('CategoryId', categoryId);
+    formData.append('Description', $('#description-edit').val());
+
+    $.each(ingredientArr, function (index, value) {
+        formData.append(`Ingredients[${index}].IngredientId`, value.IngredientId);
+        formData.append(`Ingredients[${index}].Quantity`, value.Quantity);
+    });
 
     $.ajax({
         url: "/Meal/UpdateMeal/" + $('#id-edit').val(),
-        data: JSON.stringify(dataObj),
+        data: formData,
         type: "POST",
-        contentType: "application/json;charset=utf-8",
-        dataType: "json",
-        async: true,
         processData: false,
+        contentType: false,
         success: function (result) {
             if (result.status == 1) {
                 toastr.success(result.mess, "Success");

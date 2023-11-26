@@ -63,7 +63,7 @@ namespace CateringManagement.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddMeal([FromBody] MealCreateRequest request)
+        public async Task<IActionResult> AddMeal([FromForm] MealCreateRequest request, IFormFile image)
         {
             var userSesion = HttpContext.Session.GetObjectFromJson<Users>("userLogin");
 
@@ -77,6 +77,11 @@ namespace CateringManagement.Controllers
             if (string.IsNullOrEmpty(request.Name))
             {
                 return Json(new ResponseModel { Status = 0, Mess = "Please enter the name" });
+            }
+
+            if (image == null)
+            {
+                return Json(new ResponseModel { Status = 0, Mess = "Please choose the image" });
             }
 
             if (!request.Ingredients.Any())
@@ -97,6 +102,12 @@ namespace CateringManagement.Controllers
                 return Json(new ResponseModel { Status = 0, Mess = "Invalid quantity" });
             }
 
+            var imageName = await Commons.UploadFile(image, "meals");
+            if (imageName == null)
+            {
+                return Json(new ResponseModel { Status = 0, Mess = "Upload image failed" });
+            }
+
             List<MealIngredients> ingredientData = new();
             decimal price = 0;
             foreach (var item in request.Ingredients)
@@ -111,13 +122,14 @@ namespace CateringManagement.Controllers
                 });
                 price += item.Quantity * ingredient.PriceUnit;
             }
+
             var newMeal = new Meals
             {
                 Name = request.Name,
                 MealCategoryId = request.CategoryId,
                 Price = price,
-                Description = request.Description,
-                Image = "",
+                Description = request.Description ?? "",
+                Image = imageName,
                 MealIngredients = ingredientData,
                 CreatedBy = userSesion.Id,
                 UpdatedBy = userSesion.Id
@@ -128,7 +140,7 @@ namespace CateringManagement.Controllers
                 await _mealsRepo.Create(newMeal);
                 return Json(new ResponseModel { Status = 1, Mess = "Add meal successfully" });
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 return Json(new ResponseModel { Status = 0, Mess = "Add meal failed" });
             }
@@ -171,13 +183,15 @@ namespace CateringManagement.Controllers
                 CategoryId = meal.MealCategoryId,
                 CategoryName = meal.MealCategory.Name,
                 Description = meal.Description,
+                Image = meal.Image,
+                ImageSrc = MealHelper.GetMealImageSrc(meal.Image),
                 Ingredients = ingredientData,
             };
             return Json(new ResponseModel<MealDetailDTO> { Status = 1, Data = data });
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateMeal([FromBody] MealUpdateRequest request, Guid id)
+        public async Task<IActionResult> UpdateMeal([FromForm] MealUpdateRequest request, Guid id, IFormFile image)
         {
             var userSesion = HttpContext.Session.GetObjectFromJson<Users>("userLogin");
 
@@ -217,6 +231,16 @@ namespace CateringManagement.Controllers
                 return Json(new ResponseModel { Status = 0, Mess = "Invalid quantity" });
             }
 
+            if (image != null)
+            {
+                var imageName = await Commons.UploadFile(image, "meals");
+                if (imageName == null)
+                {
+                    return Json(new ResponseModel { Status = 0, Mess = "Upload image failed" });
+                }
+                meal.Image = imageName;
+            }            
+
             List<MealIngredients> ingredientData = new();
             var oldMealIngredients = await _context.MealIngredients.Where(x => x.MealId == id && x.IsDeleted == 0).ToListAsync();
 
@@ -240,6 +264,7 @@ namespace CateringManagement.Controllers
             meal.Price = price;
             meal.Description = request.Description;
             meal.UpdatedBy = userSesion.Id;
+            meal.UpdatedAt = DateTime.Now;
 
             try
             {
@@ -268,6 +293,7 @@ namespace CateringManagement.Controllers
 
             meal.IsDeleted = 1;
             meal.UpdatedBy = userSesion.Id;
+            meal.UpdatedAt = DateTime.Now;
 
             var mealIngredients = await _context.MealIngredients.Where(x => x.MealId == id && x.IsDeleted == 0).ToListAsync();
 

@@ -19,6 +19,7 @@
                 <table class="table table-bordered" id="meals-table" style="width: 100% !important">
                     <thead>
                         <tr>
+                            <th>Image</th>
                             <th>Name</th>
                             <th>Price (USD)</th>
                             <th>Category</th>
@@ -43,6 +44,15 @@
             </div>
             <div class="modal-body">
                 <form>
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Image</label>
+                        <input type="file" class="form-control" onchange="showSelectedImage(this)" id="image">
+                    </div>
+                    <div id="selected-image-div">
+                        <div>
+                            <img id="selected-image" style="max-width: 200px; max-height: 200px;" />
+                        </div>
+                    </div>
                     <div class="mb-3">
                         <label for="recipient-name" class="col-form-label">Name:</label>
                         <input type="text" class="form-control" id="name">
@@ -127,12 +137,22 @@
             <div class="modal-body">
                 <form>
                     <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Image:</label>
+                        <div>
+                            <img id="image-detail" style="max-width: 200px; max-height: 200px;">
+                        </div>
+                    </div>
+                    <div class="mb-3">
                         <label for="recipient-name" class="col-form-label">Name:</label>
                         <input type="text" class="form-control" id="name-detail" disabled>
                     </div>
                     <div class="mb-3">
                         <label for="category" class="col-form-label">Category:</label>
                         <input type="text" class="form-control" id="category-detail" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="col-form-label">Description:</label>
+                        <textarea class="form-control" id="description-detail" disabled></textarea>
                     </div>
                     <div class="mb-3">
                         <table class="table table-bordered" id="meals-table">
@@ -179,12 +199,25 @@
                 <form>
                     <input hidden id="id-edit" />
                     <div class="mb-3">
+                        <label for="image" class="form-label">Image</label>
+                        <input type="file" class="form-control" onchange="showSelectedImage(this, '-edit')" id="image-edit">
+                    </div>
+                    <div id="selected-image-div-edit">
+                        <div>
+                            <img id="selected-image-edit" style="max-width: 200px; max-height: 200px;" />
+                        </div>
+                    </div>
+                    <div class="mb-3">
                         <label for="recipient-name" class="col-form-label">Name:</label>
                         <input type="text" class="form-control" id="name-edit">
                     </div>
                     <div class="mb-3">
                         <label for="category" class="col-form-label">Category:</label>
                         <select class="form-select" aria-label="Category" id="category-edit"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="col-form-label">Description:</label>
+                        <textarea class="form-control" id="description-edit" rows="5"></textarea>
                     </div>
                     <div class="mb-3">
                         <div class="row">
