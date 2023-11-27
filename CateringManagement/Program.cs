@@ -10,7 +10,7 @@ builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 builder.Services.AddMvc();
 builder.Services.AddSession(c=>
 {
-    c.IOTimeout = TimeSpan.FromSeconds(20);
+    c.IOTimeout = TimeSpan.FromMinutes(30);
     c.Cookie.HttpOnly = true;
     c.Cookie.IsEssential = true;
 });
@@ -23,6 +23,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
                 dd.LoginPath = "/Login/Login";
                 dd.LogoutPath = "/Login/Logout";
                 dd.AccessDeniedPath = "/Login/AccessDenied";
+                dd.ExpireTimeSpan = TimeSpan.FromMinutes(30);
             });
 builder.Services.AddAuthorization();
 
