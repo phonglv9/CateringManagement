@@ -85,7 +85,7 @@ function addCategory() {
 function showEditModal(id) {
     $('#id-edit').val(id);
     $.ajax({
-        url: "/MealCategory/GetDetail",
+        url: "/MealCategory/GetDetail/" + id,
         type: "GET",
         contentType: "application/json;charset=utf-8",
         dataType: "json",
