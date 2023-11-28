@@ -93,6 +93,7 @@ function showEditModal(id) {
         processData: false,
         success: function (result) {
             if (result.status == 1) {
+                $('#name-edit').val(result.data.name);
                 $('#edit-category-modal').modal('show');
             } else {
                 toastr.error(result.mess, "Error");
